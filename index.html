@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>C3 | Round Robin vs Priority Scheduling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/css/style.css"/>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">OS Course · Project C3</div>
+  <h1>Round Robin vs Priority Scheduling</h1>
+  <p>CPU Scheduling Comparison Simulator</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="input">① Input</button>
+  <button class="tab" data-tab="gantt">② Gantt Charts</button>
+  <button class="tab" data-tab="results">③ Results</button>
+  <button class="tab" data-tab="summary">④ Summary</button>
+  <button class="tab" data-tab="scenarios">⑤ Scenarios</button>
+</div>
+
+<div class="section active" id="sec-input">
+  <div class="panel">
+    <div class="panel-title">Time Quantum (Round Robin)</div>
+    <div class="quantum-row">
+      <div class="form-group">
+        <label class="quantum-label">QUANTUM (q)</label>
+        <input type="number" id="quantum" value="2" min="1" placeholder="e.g. 2"/>
+      </div>
+      <div id="quantum-err" class="error-msg"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Add Process</div>
+    <div id="global-err" class="validation-alert"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Process ID</label>
+        <input type="text" id="inp-pid" placeholder="e.g. P1"/>
+        <div class="error-msg" id="err-pid"></div>
+      </div>
+      <div class="form-group">
+        <label>Arrival Time</label>
+        <input type="number" id="inp-at" placeholder="e.g. 0" min="0"/>
+        <div class="error-msg" id="err-at"></div>
+      </div>
+      <div class="form-group">
+        <label>Burst Time</label>
+        <input type="number" id="inp-bt" placeholder="e.g. 5" min="1"/>
+        <div class="error-msg" id="err-bt"></div>
+      </div>
+      <div class="form-group">
+        <label>Priority (lower = urgent)</label>
+        <input type="number" id="inp-pr" placeholder="1–99" min="1"/>
+        <div class="error-msg" id="err-pr"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-accent" id="btn-add-process">+ Add Process</button>
+      <button class="btn btn-outline" id="btn-load-demo">Load Demo</button>
+      <button class="btn btn-outline" id="btn-clear-all">Clear All</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Process Table</div>
+    <div class="process-table-wrap">
+      <table id="process-table">
+        <thead>
+          <tr>
+            <th>PID</th><th>Arrival Time</th><th>Burst Time</th><th>Priority</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="process-tbody">
+          <tr><td colspan="5" class="empty-state">No processes added yet. Add at least 2 to simulate.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <button class="btn btn-run" id="btn-run" disabled>
+    ▶ Run Simulation
+  </button>
+</div>
+
+<div class="section" id="sec-gantt">
+  <div class="algo-header">
+    <div class="algo-card rr">
+      <div class="label">Algorithm 1</div>
+      <div class="name">Round Robin</div>
+    </div>
+    <div class="algo-card pr">
+      <div class="label">Algorithm 2</div>
+      <div class="name">Priority Scheduling</div>
+    </div>
+  </div>
+
+  <div id="gantt-placeholder" class="placeholder">
+    <div class="icon">⬛</div>
+    <p>Run the simulation first to see Gantt charts.</p>
+  </div>
+
+  <div id="gantt-content" style="display:none">
+    <div class="gantt-section">
+      <div class="gantt-label rr"><span class="dot rr"></span>Round Robin — Ready Queue Snapshot</div>
+      <div class="queue-display" id="rr-queue">Queue will appear after simulation.</div>
+      <div class="gantt-label rr" style="margin-top:12px"><span class="dot rr"></span>Round Robin Gantt Chart</div>
+      <div class="gantt-chart" id="gantt-rr"></div>
+      <div class="gantt-times" id="times-rr"></div>
+      <div class="legend" id="legend-rr"></div>
+    </div>
+
+    <div class="gantt-section" style="margin-top:2rem">
+      <div class="gantt-label pr"><span class="dot pr"></span>Priority Scheduling Gantt Chart</div>
+      <div class="gantt-chart" id="gantt-pr"></div>
+      <div class="gantt-times" id="times-pr"></div>
+      <div class="legend" id="legend-pr"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="sec-results">
+  <div id="results-placeholder" class="placeholder">
+    <div class="icon">📊</div>
+    <p>Run the simulation first to see results.</p>
+  </div>
+  <div id="results-content" style="display:none">
+    <div id="starvation-banner"></div>
+    <div class="metrics-row" id="metrics-row"></div>
+    <div class="results-grid" id="results-grid"></div>
+  </div>
+</div>
+
+<div class="section" id="sec-summary">
+  <div id="summary-placeholder" class="placeholder">
+    <div class="icon">📝</div>
+    <p>Run the simulation first to see the analysis.</p>
+  </div>
+  <div id="summary-content" style="display:none">
+    <div class="summary-grid" id="summary-grid"></div>
+    <div class="conclusion" id="conclusion-area"></div>
+  </div>
+</div>
+
+<div class="section" id="sec-scenarios">
+  <div class="panel">
+    <div class="panel-title">Pre-Built Test Scenarios</div>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.25rem">
+      Click a scenario to expand it. Use <strong style="color:var(--accent)">Load &amp; Run</strong> to
+      populate the simulator with that scenario's data and immediately run both algorithms.
+    </p>
+    <div class="scenario-list" id="scenario-list"></div>
+  </div>
+</div>
+
+<script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>
