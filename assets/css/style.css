@@ -159,7 +159,8 @@ tr:hover td { background: var(--surface2); }
 .gantt-bar .bar-pid { font-size: 0.78rem; font-weight: 700; }
 .gantt-bar .bar-dur { font-size: 0.62rem; opacity: 0.75; }
 .gantt-bar.idle { background: var(--surface3); color: var(--muted); }
-.gantt-times { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding: 0 2px; }
+.gantt-times { position: relative; height: 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+.gantt-times span { position: absolute; top: 0; white-space: nowrap; }
 
 /* ── Legend ──────────────────────────────────────── */
 .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }

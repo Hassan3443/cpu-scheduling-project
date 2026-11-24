@@ -35,7 +35,17 @@ export function renderGantt(containerId, timesId, legendId, timeline, colorMap) 
   });
 
   const times = [...timeSet].sort((a,b) => a - b);
-  timesEl.innerHTML = times.map(t => `<span>${t}</span>`).join('');
+  // Place each time label at its true position on the bar. Skip labels that
+  // would overlap the previous one, but always keep the first and the last.
+  let lastPct = -100;
+  timesEl.innerHTML = times.map((t, i) => {
+    const pct = t / totalTime * 100;
+    const isLast = i === times.length - 1;
+    if (!isLast && (pct - lastPct < 2.5 || 100 - pct < 2.5)) return '';
+    lastPct = pct;
+    const shift = i === 0 ? '0' : isLast ? '-100%' : '-50%';
+    return `<span style="left:${pct.toFixed(2)}%;transform:translateX(${shift})">${t}</span>`;
+  }).join('');
   legendEl.innerHTML = Object.entries(seen).map(([pid, col]) =>
     `<div class="legend-item"><div class="legend-color" style="background:${col}33;border:2px solid ${col}"></div><span style="color:${col}">${pid}</span></div>`
   ).join('');
