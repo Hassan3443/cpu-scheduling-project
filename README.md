@@ -63,35 +63,23 @@ https://hassan3443.github.io/cpu-scheduling-project/
 
 ```text
 cpu-scheduling-project/
-│
 ├── index.html
 ├── README.md
-│
 ├── assets/
-│   ├── css/
-│   │   └── style.css
-│   │
-│   └── js/
-│       └── main.js
-│
+│   ├── css/style.css
+│   ├── js/main.js
+│   └── screenshots/gantt-charts.png
 └── modules/
-    ├── input/
-    │   └── inputManager.js
-│
+    ├── input/inputManager.js          # Input and validation
     ├── algorithms/
     │   ├── roundRobin.js
     │   └── priority.js
-│
     ├── ui/
     │   ├── inputUI.js
     │   ├── ganttChart.js
     │   └── tableRenderer.js
-│
-    ├── testing/
-    │   └── testScenarios.js
-│
-    └── analysis/
-        └── analysis.js
+    ├── testing/testScenarios.js       # 5 built-in scenarios
+    └── analysis/analysis.js           # Comparison and starvation check
 ```
 
 ---
@@ -109,14 +97,26 @@ cpu-scheduling-project/
 
 ---
 
-# Example Workload
+# Example Result
+
+The **Load Demo** button fills this workload. Results below are for a quantum of 4.
 
 | PID | Arrival Time | Burst Time | Priority |
 | --- | ------------ | ---------- | -------- |
-| P1  | 0            | 8          | 4        |
+| P1  | 0            | 8          | 3        |
 | P2  | 1            | 4          | 1        |
-| P3  | 2            | 2          | 2        |
-| P4  | 3            | 6          | 3        |
+| P3  | 2            | 9          | 4        |
+| P4  | 3            | 5          | 2        |
+
+| Metric (average) | Round Robin (q=4) | Preemptive Priority |
+| ---------------- | ----------------- | ------------------- |
+| Waiting time     | 11.75             | 6.50                |
+| Turnaround time  | 18.25             | 13.00               |
+| Response time    | 4.50              | 4.25                |
+
+Priority scheduling gives lower averages here, but P3 (the lowest priority) waits 15 units and only starts at time 17. Round Robin starts every process within the first rotation. This is the fairness vs urgency trade-off the project is about.
+
+![Gantt charts for the demo workload](assets/screenshots/gantt-charts.png)
 
 ---
 
@@ -144,37 +144,9 @@ Open `index.html` in your browser.
 
 ---
 
-# Enable GitHub Pages
+# Deployment
 
-1. Open the repository on GitHub
-2. Go to:
-
-```text
-Settings → Pages
-```
-
-3. Under:
-
-```text
-Build and deployment
-```
-
-Choose:
-
-```text
-Source → Deploy from a branch
-```
-
-4. Select:
-
-```text
-Branch: main
-Folder: /root
-```
-
-5. Click Save
-
-After 1–2 minutes your project will be live.
+The site is static and is published with GitHub Pages from the `main` branch: https://hassan3443.github.io/cpu-scheduling-project/
 
 ---
 
