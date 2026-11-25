@@ -1,6 +1,6 @@
 export const COLORS = [
-  '#8f9bd6','#d9899b','#79bfa5','#d6b073',
-  '#7fb3cf','#a6c283','#d99a82','#8fc4c9','#b7a0d6','#cfa98a'
+  '#38BDF8','#34D399','#A78BFA','#FBBF24','#FB7185','#2DD4BF',
+  '#60A5FA','#F0ABFC','#A3E635','#FDBA74'
 ];
 
 export function renderTable(processes) {

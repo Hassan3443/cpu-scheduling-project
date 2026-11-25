@@ -54,10 +54,11 @@ export function renderCpuDiagram(procs, quantum) {
       <rect class="cd-lane" x="20" y="45" width="110" height="170" rx="12"/>
       <rect class="cd-lane" x="170" y="95" width="360" height="70" rx="35"/>
       <path class="cd-arrow" d="M535 130 H590 M542 123 L535 130 L542 137"/>
-      <g class="cd-chip"><rect x="600" y="75" width="110" height="110" rx="14" fill="url(#chipg)" stroke="#79bfa5" stroke-width="1.5"/>
+      <polygon id="cd-latch" class="cd-latch" points="596,70 714,70 722,78 722,182 714,190 596,190 588,182 588,78 596,70" fill="none"/>
+      <g class="cd-chip"><rect x="600" y="75" width="110" height="110" rx="14" fill="url(#chipg)" stroke="#323B4D" stroke-width="1.5"/>
         ${[0,1,2,3].map(i => `<path class="cd-pin" d="M${618 + i * 25} 75 v-14 M${618 + i * 25} 185 v14 M600 ${93 + i * 25} h-14 M710 ${93 + i * 25} h14"/>`).join('')}
         <rect x="620" y="95" width="70" height="70" rx="8" fill="#202533" stroke="#4a566f"/></g>
-      <g transform="translate(655 130) rotate(-90)"><circle id="cd-ring" r="32" pathLength="100" fill="none" stroke="#d6b073" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100" opacity="0"/></g>
+      <g transform="translate(655 130) rotate(-90)"><circle id="cd-ring" r="32" pathLength="100" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100" opacity="0"/></g>
       <rect class="cd-lane" x="770" y="45" width="110" height="170" rx="12"/>
       <g id="cd-procs"></g>
       <text class="cd-idle" id="cd-idle" x="655" y="235" text-anchor="middle"></text>
@@ -93,7 +94,7 @@ function load() {
   document.getElementById('cd-strip').innerHTML = ctx.timeline.map(s => s.pid === 'IDLE' ? '' :
     `<span style="left:${s.start / ctx.total * 100}%;width:${(s.end - s.start) / ctx.total * 100}%;background:${ctx.colors[s.pid]}55;border-color:${ctx.colors[s.pid]}" title="${s.pid}: ${s.start} to ${s.end}">${s.pid}</span>`).join('') + '<i id="cd-head"></i>';
   document.getElementById('cd-ringnote').textContent = ctx.key === 'rr'
-    ? `The amber ring on the CPU fills as the time slice (quantum ${ctx.quantum}) is used up. If a process arrives at the same moment a slice ends, the new arrival joins the queue before the preempted process.`
+    ? `The ring on the CPU fills as the time slice (quantum ${ctx.quantum}) is used up and turns amber on its last tick. If a process arrives at the same moment a slice ends, the new arrival joins the queue before the preempted process.`
     : '';
   stop(); setT(ctx.timeline.length ? Math.min(ctx.timeline[0].start, ctx.total) : 0, true);
 }
@@ -127,6 +128,16 @@ function setT(t, snap = false) {
     ring.setAttribute('opacity', '1');
     ring.style.strokeDashoffset = String(100 - 100 * (t - cur.start) / ctx.quantum);
   } else { ring.setAttribute('opacity', '0'); ring.style.strokeDashoffset = '100'; }
+  // signature moments: die latch on a new dispatch, amber ring on the last tick of a slice
+  const latch = document.getElementById('cd-latch');
+  const prevPid = ctx.lastPid, nowPid = cur ? cur.pid : null;
+  if (!snap && !reduce() && nowPid && nowPid !== prevPid) {
+    const preempt = ctx.key !== 'fcfs' && ctx.key !== 'sjf' && prevPid && st.some(s => s.pid === prevPid && s.status === 'ready');
+    latch.setAttribute('class', 'cd-latch ' + (preempt ? 'is-preempt' : 'is-dispatch'));
+    void latch.getBoundingClientRect(); latch.classList.add('go');
+  } else latch.setAttribute('class', 'cd-latch');
+  ctx.lastPid = nowPid;
+  ring.setAttribute('data-quantum', ctx.key === 'rr' && cur && (t - cur.start) >= ctx.quantum - 1 && ctx.quantum > 1 ? 'critical' : '');
   document.getElementById('cd-idle').textContent = !cur && t < ctx.total ? 'CPU idle' : '';
   document.getElementById('cd-time').textContent = `t = ${t} of ${ctx.total}`;
   document.getElementById('cd-scrub').value = t;

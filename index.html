@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23202533'/%3E%3Crect x='18' y='18' width='28' height='28' rx='6' fill='%232a3347' stroke='%2379bfa5' stroke-width='3'/%3E%3Crect x='27' y='27' width='10' height='10' rx='2' fill='%238f9bd6'/%3E%3C/svg%3E"/>
-<meta name="theme-color" content="#171a24"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230B0D10'/%3E%3Cpolygon points='17,12 47,12 52,17 52,47 47,52 17,52 12,47 12,17' fill='%2312151B' stroke='%23364052' stroke-width='3'/%3E%3Crect x='20' y='20' width='24' height='24' rx='2.5' fill='%230B0D10' stroke='%23242B37' stroke-width='1.5'/%3E%3Crect x='23' y='24' width='8' height='4' rx='1.25' fill='%23F59E0B'/%3E%3Crect x='26' y='30' width='13' height='4' rx='1.25' fill='%2310B981'/%3E%3Crect x='33' y='36' width='8' height='4' rx='1.25' fill='%2338BDF8'/%3E%3Crect x='4' y='30' width='8' height='4' fill='%2338BDF8'/%3E%3Crect x='52' y='30' width='8' height='4' fill='%2310B981'/%3E%3C/svg%3E"/>
+<meta name="theme-color" content="#0B0D10"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CPU Scheduling Comparison Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="./assets/css/style.css"/>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Compare CPU scheduling algorithms live">
@@ -22,10 +22,10 @@
 <meta name="twitter:image" content="https://hassan3443.github.io/cpu-scheduling-project/assets/og.png">
 </head>
 <body>
-<div class="bg-fx" aria-hidden="true"><b class="o1"></b><b class="o2"></b><b class="o3"></b><span class="grid"></span><i style="--x:8%;--y:20%;--d:34s;--dl:-3s;--c:#8f9bd6"></i><i style="--x:22%;--y:70%;--d:42s;--dl:-12s;--c:#79bfa5"></i><i style="--x:40%;--y:35%;--d:38s;--dl:-20s;--c:#d9899b"></i><i style="--x:58%;--y:80%;--d:46s;--dl:-8s;--c:#d6b073"></i><i style="--x:72%;--y:25%;--d:36s;--dl:-25s;--c:#7fb3cf"></i><i style="--x:88%;--y:60%;--d:44s;--dl:-15s;--c:#8f9bd6"></i><i style="--x:95%;--y:15%;--d:40s;--dl:-5s;--c:#79bfa5"></i><i style="--x:15%;--y:92%;--d:48s;--dl:-30s;--c:#d9899b"></i></div>
+<div class="bg-fx" aria-hidden="true"><b class="o1"></b><b class="o2"></b><b class="o3"></b><span class="grid"></span><span class="scan"></span><i style="--x:8%;--y:20%;--d:34s;--dl:-3s;--c:#8f9bd6"></i><i style="--x:22%;--y:70%;--d:42s;--dl:-12s;--c:#79bfa5"></i><i style="--x:40%;--y:35%;--d:38s;--dl:-20s;--c:#d9899b"></i><i style="--x:58%;--y:80%;--d:46s;--dl:-8s;--c:#d6b073"></i><i style="--x:72%;--y:25%;--d:36s;--dl:-25s;--c:#7fb3cf"></i><i style="--x:88%;--y:60%;--d:44s;--dl:-15s;--c:#8f9bd6"></i><i style="--x:95%;--y:15%;--d:40s;--dl:-5s;--c:#79bfa5"></i><i style="--x:15%;--y:92%;--d:48s;--dl:-30s;--c:#d9899b"></i></div>
 
 <div class="header">
-  <svg class="logo" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><rect x="16" y="16" width="32" height="32" rx="7" fill="#2a3347" stroke="#79bfa5" stroke-width="3"/><rect x="26" y="26" width="12" height="12" rx="3" fill="#8f9bd6"/><path d="M24 16V8M32 16V8M40 16V8M24 56v-8M32 56v-8M40 56v-8M16 24H8M16 32H8M16 40H8M56 24h-8M56 32h-8M56 40h-8" stroke="#79bfa5" stroke-width="3" stroke-linecap="round"/></svg>
+  <svg class="logo" viewBox="0 0 64 64" width="44" height="44" role="img" aria-label="CPU Scheduling Simulator"><defs><linearGradient id="ic-pkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E2430"/><stop offset="1" stop-color="#12151B"/></linearGradient></defs><g fill="#364052"><rect x="20" y="4" width="4" height="8" rx="1"/><rect x="30" y="4" width="4" height="8" rx="1"/><rect x="40" y="4" width="4" height="8" rx="1"/><rect x="20" y="52" width="4" height="8" rx="1"/><rect x="30" y="52" width="4" height="8" rx="1"/><rect x="40" y="52" width="4" height="8" rx="1"/><rect x="4" y="20" width="8" height="4" rx="1"/><rect x="4" y="30" width="8" height="4" rx="1" fill="#38BDF8"/><rect x="4" y="40" width="8" height="4" rx="1"/><rect x="52" y="20" width="8" height="4" rx="1"/><rect x="52" y="30" width="8" height="4" rx="1" fill="#10B981"/><rect x="52" y="40" width="8" height="4" rx="1"/></g><polygon points="17,12 47,12 52,17 52,47 47,52 17,52 12,47 12,17" fill="url(#ic-pkg)" stroke="#364052" stroke-width="2" stroke-linejoin="round"/><circle cx="17.5" cy="17.5" r="1.75" fill="#F59E0B"/><rect x="20" y="20" width="24" height="24" rx="2.5" fill="#0B0D10" stroke="#242B37" stroke-width="1.5"/><rect x="23" y="24" width="8" height="4" rx="1.25" fill="#F59E0B"/><rect x="26" y="30" width="13" height="4" rx="1.25" fill="#10B981"/><rect x="33" y="36" width="8" height="4" rx="1.25" fill="#38BDF8"/></svg>
   <div class="badge">OS Course · Project C3</div>
   <h1>Round Robin vs Priority Scheduling</h1>
   <p>CPU Scheduling Comparison Simulator</p>

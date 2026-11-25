@@ -435,3 +435,68 @@ label,.live-note,.cd-cap{font-size:var(--fs-xs)}
 @keyframes fx-dot{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(60px,-40px) rotate(90deg)}100%{transform:translate(-30px,50px) rotate(180deg)}}
 @media (prefers-reduced-motion:reduce){.bg-fx b,.bg-fx .grid,.bg-fx i{animation:none!important}}
 @media (max-width:560px){.bg-fx b{filter:blur(60px)}.bg-fx i:nth-of-type(n+5){display:none}}
+
+/* ===== Visual identity: Silicon Telemetry (graphite surfaces, instrument hues) ===== */
+:root{
+  --bg:#0B0D10;--surface:#12151B;--surface2:#1A1F28;--surface3:#222936;
+  --border:#232936;--border2:#323B4D;
+  --text:#EDF1F7;--muted:#98A4B8;
+  --rr:#818CF8;--rr-dim:rgba(129,140,248,.14);--rr-glow:rgba(129,140,248,.25);
+  --pr:#FB7185;--pr-dim:rgba(251,113,133,.13);--pr-glow:rgba(251,113,133,.25);
+  --accent:#38BDF8;--accent-dim:rgba(56,189,248,.13);
+  --warn:#F59E0B;--warn-dim:rgba(245,158,11,.14);
+  --state-running:#10B981;--state-queued:#818CF8;--state-done:#64748B;--state-idle:#334155;
+  --radius:8px;--radius-lg:10px;
+  --focus:#38BDF8;
+}
+html{font-size:16px}
+body,.btn,.tab,.preset,.btn-load-scenario{font-family:'IBM Plex Sans',system-ui,sans-serif}
+body{background:var(--bg);background-image:none;font-size:15px}
+.header h1{font-weight:600;letter-spacing:-.025em;background:none;-webkit-text-fill-color:var(--text);color:var(--text);font-size:clamp(1.5rem,3vw,2rem)}
+.header .badge{color:var(--accent);border-color:rgba(56,189,248,.35);background:var(--accent-dim)}
+.header .logo{width:44px;height:44px;animation:none}
+.panel,.preset,.results-card,.scenario-card,.summary-block{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 12px 32px -18px rgba(0,0,0,.7)}
+.panel-title,.gantt-label{font-weight:600;letter-spacing:.08em}
+.tab.active{background:var(--surface3);border-color:var(--border2);color:var(--text);box-shadow:inset 0 -2px 0 var(--accent)}
+.btn-accent,.btn-primary{background:var(--accent);color:#07131A;border-color:var(--accent);font-weight:600}
+.btn-accent:hover:not(:disabled){background:#5CCBF9}
+.btn-run{background:var(--accent);color:#07131A;font-weight:600}
+.btn-run:hover:not(:disabled){background:#5CCBF9}
+:where(button,select,input,a,[tabindex]):focus-visible,.btn:focus-visible,.tab:focus-visible,.preset:focus-visible,.cell-input:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,select{background:var(--surface2)}
+.preset.on{border-color:var(--accent);background:var(--accent-dim)}
+.gantt-chart,.cd-strip,#cd-svg{background:#0E1116;box-shadow:inset 0 2px 6px rgba(0,0,0,.45)}
+.gantt-bar.idle{background-color:rgba(51,65,85,.28);background-image:repeating-linear-gradient(-45deg,transparent 0 5px,rgba(148,163,184,.14) 5px 6px);border:1px dashed var(--state-idle);color:var(--muted)}
+.gantt-bar{outline-color:#0E1116}
+.dot,.panel-title::before{background:var(--accent)}
+
+/* diagram in the new palette */
+.cd-lane{fill:#12151B;stroke:#323B4D}
+.cd-arrow{stroke:#64748B}
+.cd-cap{fill:#98A4B8}
+.cd-pin{stroke:#364052}
+.cd-chip.busy{filter:drop-shadow(0 0 8px rgba(16,185,129,.5))}
+.cd-chip rect:first-of-type{stroke:#323B4D}
+.cd-chip.busy rect:first-of-type{stroke:#10B981}
+.cd-proc[data-status=ready] circle{stroke-dasharray:none}
+.cd-proc[data-status=done]{opacity:.55}
+.cd-idle{fill:#F59E0B}
+#cd-ring{stroke:#38BDF8;transition:stroke .18s,stroke-width .18s}
+#cd-ring[data-quantum=critical]{stroke:#F59E0B;stroke-width:4.5;filter:drop-shadow(0 0 5px rgba(245,158,11,.5))}
+.cd-latch{opacity:0;transform-box:fill-box;transform-origin:center;pointer-events:none;stroke-width:1.5}
+.cd-latch.is-dispatch{stroke:#10B981}
+.cd-latch.is-preempt{stroke:#F59E0B}
+.cd-latch.go{animation:die-latch .42s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes die-latch{0%{opacity:.9;transform:scale(.97)}100%{opacity:0;transform:scale(1.09)}}
+.cd-strip i{background:#38BDF8}
+.cd-controls .btn{min-height:40px}
+
+/* background: wafer reticle + slow scanline, faint glows */
+.bg-fx{background:var(--bg)}
+.bg-fx b{opacity:.09}
+.bg-fx .o1{background:#38BDF8}.bg-fx .o2{background:#10B981;opacity:.07}.bg-fx .o3{background:#818CF8;opacity:.08}
+.bg-fx .grid{inset:0;animation:none;background-size:32px 32px,128px 128px,128px 128px;background-image:radial-gradient(circle at 1px 1px,rgba(152,164,184,.16) 1px,transparent 0),linear-gradient(to right,rgba(50,59,77,.16) 1px,transparent 1px),linear-gradient(to bottom,rgba(50,59,77,.16) 1px,transparent 1px);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 35%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 80% 70% at 50% 35%,#000 35%,transparent 100%)}
+.bg-fx .scan{position:absolute;left:0;right:0;top:-120px;height:120px;background:linear-gradient(to bottom,transparent,rgba(56,189,248,.03) 75%,rgba(56,189,248,.09) 99%,transparent);animation:wafer-scan 18s linear infinite;will-change:transform}
+@keyframes wafer-scan{0%{transform:translate3d(0,-10vh,0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translate3d(0,115vh,0);opacity:0}}
+.bg-fx i{opacity:.3}
+@media (prefers-reduced-motion:reduce){.bg-fx .scan{animation:none;display:none}.cd-latch.go{animation:none}}
