@@ -46,7 +46,7 @@ export function renderCpuDiagram(procs, quantum) {
       <input type="range" id="cd-scrub" min="0" value="0" step="1" aria-label="Time"/>
       <span class="cd-time" id="cd-time">t = 0</span>
     </div>
-    <svg id="cd-svg" viewBox="0 0 900 250" role="img" aria-labelledby="cd-title">
+    <svg id="cd-svg" viewBox="0 0 900 266" role="img" aria-labelledby="cd-title">
       <title id="cd-title">Processes move from the ready queue to the CPU, then to done</title>
       <defs><linearGradient id="chipg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b4763"/><stop offset="1" stop-color="#2a3347"/></linearGradient></defs>
       <text class="cd-cap" x="30" y="30">INCOMING</text><text class="cd-cap" x="290" y="30">READY QUEUE</text>
@@ -55,23 +55,25 @@ export function renderCpuDiagram(procs, quantum) {
       <rect class="cd-lane" x="170" y="95" width="360" height="70" rx="35"/>
       <path class="cd-arrow" d="M535 130 H590 M542 123 L535 130 L542 137"/>
       <polygon id="cd-latch" class="cd-latch" points="596,70 714,70 722,78 722,182 714,190 596,190 588,182 588,78 596,70" fill="none"/>
-      <g class="cd-chip"><rect x="600" y="75" width="110" height="110" rx="14" fill="url(#chipg)" stroke="#323B4D" stroke-width="1.5"/>
+      <path class="cd-trace" d="M130 130 H170"/><path class="cd-trace" d="M710 130 H770"/>
+      <path class="cd-bus" id="cd-bus" d="M655 192 V236 H350 V168" fill="none"/><text class="cd-buslabel" x="500" y="231" text-anchor="middle">PREEMPT / SLICE END</text>
+      <g class="cd-chip"><polygon points="614,75 696,75 710,89 710,171 696,185 614,185 600,171 600,89" fill="url(#chipg)" stroke="#323B4D" stroke-width="1.5"/>
         ${[0,1,2,3].map(i => `<path class="cd-pin" d="M${618 + i * 25} 75 v-14 M${618 + i * 25} 185 v14 M600 ${93 + i * 25} h-14 M710 ${93 + i * 25} h14"/>`).join('')}
         <rect x="620" y="95" width="70" height="70" rx="8" fill="#202533" stroke="#4a566f"/></g>
       <g transform="translate(655 130) rotate(-90)"><circle id="cd-ring" r="32" pathLength="100" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100" opacity="0"/></g>
       <rect class="cd-lane" x="770" y="45" width="110" height="170" rx="12"/>
       <g id="cd-procs"></g>
-      <text class="cd-idle" id="cd-idle" x="655" y="235" text-anchor="middle"></text>
+      <text class="cd-idle" id="cd-idle" x="655" y="260" text-anchor="middle"></text>
     </svg>
     <div class="cd-strip" id="cd-strip" aria-hidden="true"></div>
     <p class="cd-note" id="cd-ringnote"></p>
-    <p class="cd-note">Press Play, or Step one time unit at a time. Processes arrive on the left, wait in the ready queue (oldest first), run on the CPU, then move to Done. The number inside is the time still needed.</p>`;
+    <p class="cd-note">Press Play, or Step one time unit at a time. The arc around each process shows how much of its work is still left. Processes arrive on the left, wait in the ready queue (oldest first), run on the CPU, then move to Done. The number inside is the time still needed.</p>`;
   const layer = host.querySelector('#cd-procs');
   procs.forEach((p, i) => {
     const g = document.createElementNS(NS, 'g');
     g.setAttribute('class', 'cd-proc');
     const col = COLORS[i % COLORS.length];
-    g.innerHTML = `<circle r="25" fill="${col}33" stroke="${col}" stroke-width="2"/><text class="cd-pid" y="-2" text-anchor="middle">${p.pid}</text><text class="cd-rem" y="14" text-anchor="middle"></text>`;
+    g.innerHTML = `<circle r="25" fill="${col}22" stroke="${col}55" stroke-width="1.5"/><circle class="cd-prog" r="29" pathLength="100" fill="none" stroke="${col}" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" transform="rotate(-90)"/><text class="cd-pid" y="-2" text-anchor="middle">${p.pid}</text><text class="cd-rem" y="14" text-anchor="middle"></text>`;
     layer.appendChild(g); ctx.nodes[p.pid] = g;
   });
   ctx.colors = Object.fromEntries(procs.map((p, i) => [p.pid, COLORS[i % COLORS.length]]));
@@ -119,6 +121,7 @@ function setT(t, snap = false) {
     const [x, y] = slot(s.status, ready.findIndex(r => r.pid === s.pid), done.findIndex(r => r.pid === s.pid), inc.findIndex(r => r.pid === s.pid));
     g.style.transform = `translate(${x}px, ${y}px)`;
     g.setAttribute('data-status', s.status);
+    g.querySelector('.cd-prog').style.strokeDashoffset = String(100 - 100 * s.rem / ctx.procs.find(q => q.pid === s.pid).bt);
     g.querySelector('.cd-rem').textContent = s.status === 'done' ? '✓' : String(s.rem);
   });
   const cur = ctx.timeline.find(s => s.pid !== 'IDLE' && s.start <= t && t < s.end);
@@ -135,6 +138,7 @@ function setT(t, snap = false) {
     const preempt = ctx.key !== 'fcfs' && ctx.key !== 'sjf' && prevPid && st.some(s => s.pid === prevPid && s.status === 'ready');
     latch.setAttribute('class', 'cd-latch ' + (preempt ? 'is-preempt' : 'is-dispatch'));
     void latch.getBoundingClientRect(); latch.classList.add('go');
+    const bus = document.getElementById('cd-bus'); bus.classList.remove('go'); if (preempt) { void bus.getBoundingClientRect(); bus.classList.add('go'); }
   } else latch.setAttribute('class', 'cd-latch');
   ctx.lastPid = nowPid;
   ring.setAttribute('data-quantum', ctx.key === 'rr' && cur && (t - cur.start) >= ctx.quantum - 1 && ctx.quantum > 1 ? 'critical' : '');

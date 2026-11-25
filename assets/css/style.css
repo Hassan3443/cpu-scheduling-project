@@ -500,3 +500,79 @@ input,select{background:var(--surface2)}
 @keyframes wafer-scan{0%{transform:translate3d(0,-10vh,0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translate3d(0,115vh,0);opacity:0}}
 .bg-fx i{opacity:.3}
 @media (prefers-reduced-motion:reduce){.bg-fx .scan{animation:none;display:none}.cd-latch.go{animation:none}}
+
+/* ===== Polish pass: Plus Jakarta Sans, instrument tabs, stepper, KPI and table styling ===== */
+:root{--font-sans:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;--font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --bg:#0A0D12;--surface:#11151D;--surface2:#171C27;--surface3:#1E2533;--border:rgba(148,163,184,.14);--border2:rgba(148,163,184,.26);--muted:#94A3B8}
+body,.btn,.tab,.preset,.btn-load-scenario,select{font-family:var(--font-sans)}
+body{font-size:15px}
+.header h1{font-weight:700;letter-spacing:-.03em}
+.header .badge{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em}
+.bg-fx{background:#0A0D12}
+
+/* tabs */
+.tabs{display:flex;align-items:center;gap:4px;padding:5px;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;height:40px;padding:0 14px;font-size:13.5px;font-weight:500;color:var(--muted);background:transparent;border:1px solid transparent;border-radius:10px;white-space:nowrap;box-shadow:none}
+.tab .tab-idx{font-family:var(--font-mono);font-size:11px;font-weight:600;color:#64748B}
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,.04)}
+.tab.active{color:var(--text);font-weight:600;background:var(--surface2);border-color:rgba(56,189,248,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 10px -2px rgba(56,189,248,.2)}
+.tab.active .tab-idx{color:var(--accent)}
+.tab-divider{width:1px;height:20px;margin:0 4px;background:var(--border2);flex:none}
+.tab-util{flex:0 0 auto}
+.tab-help-mark{display:inline-grid;place-items:center;width:17px;height:17px;font:700 11px var(--font-mono);color:var(--muted);border:1px solid var(--border2);border-radius:50%}
+.tab-util.active .tab-help-mark{color:var(--accent);border-color:var(--accent)}
+
+/* stepper */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:none;margin:0 0 24px;padding:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.steps li{flex:none;display:flex;align-items:center;gap:12px;padding:13px 18px;background:none;border:0;border-right:1px solid var(--border);border-radius:0;font-size:12.5px;color:var(--muted)}
+.steps li:last-child{border-right:0}
+.steps b{width:28px;height:28px;border-radius:6px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,.28);font:600 12px var(--font-mono)}
+.steps span{display:flex;flex-direction:column;gap:1px;line-height:1.3}
+.steps strong{font-size:14px;color:var(--text);font-weight:600}
+@media (max-width:700px){.steps{grid-template-columns:1fr}.steps li{border-right:0;border-bottom:1px solid var(--border)}.steps li:last-child{border-bottom:0}}
+
+/* presets: balanced 3x2 */
+.presets{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.preset{border-radius:10px;border-width:1px;padding:15px 16px}
+.preset:hover{border-color:var(--border2);background:var(--surface3);transform:translateY(-1px)}
+.preset.on{border-color:var(--accent);background:linear-gradient(180deg,rgba(56,189,248,.12),rgba(56,189,248,.04))}
+@media (max-width:900px){.presets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.presets{grid-template-columns:1fr}}
+.panel{padding:24px;border-radius:14px}
+.panel-title{font-size:12.5px;font-weight:700;letter-spacing:.08em;color:var(--text);display:flex;align-items:center;gap:10px}
+.panel-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);order:3}
+.panel-title .live-note{order:2;font-weight:400;letter-spacing:0;text-transform:none}
+
+/* KPI cards */
+.metric-card{padding:20px 18px 16px;border-radius:14px}
+.metric-label{font-size:11.5px;font-weight:600;letter-spacing:.08em;color:var(--muted)}
+.metric-val{font-size:26px;font-weight:700;letter-spacing:-.03em;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.metric-val.loser{color:var(--muted)!important;font-weight:500}
+.winner-badge .delta{font-family:var(--font-mono);opacity:.9;margin-left:6px}
+
+/* results tables */
+.results-card{border-radius:14px;overflow:hidden}
+.results-card.is-winner{border-color:rgba(52,211,153,.35);box-shadow:inset 0 1px 0 rgba(52,211,153,.18),0 12px 30px -18px rgba(52,211,153,.25)}
+.results-card-header{display:flex;align-items:center;justify-content:space-between;font-weight:600;letter-spacing:-.01em;font-size:14px}
+.win-chip{padding:3px 9px;font:600 11px var(--font-mono);color:#34D399;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);border-radius:999px}
+.results-card table th:nth-child(n+2),.results-card table td:nth-child(n+2){text-align:right}
+.results-card table tbody tr:nth-child(even){background:rgba(255,255,255,.018)}
+.results-card table tbody tr:hover{background:rgba(56,189,248,.055)}
+.results-card table td:nth-child(2),.results-card table td:nth-child(3),.results-card table td:nth-child(4){color:var(--muted)}
+.results-card table td,.results-card table th{font-variant-numeric:tabular-nums}
+.pid-badge{position:relative;padding-left:12px}
+.pid-badge::before{content:"";position:absolute;left:4px;top:5px;bottom:5px;width:3px;border-radius:2px;background:var(--accent)}
+
+/* diagram upgrades */
+.cd-trace{stroke:#323B4D;stroke-width:2;stroke-dasharray:3 5}
+.cd-bus{stroke:#323B4D;stroke-width:2;stroke-dasharray:4 5;fill:none}
+.cd-bus.go{stroke:#F59E0B;stroke-dasharray:10 8;animation:bus-flow .6s linear 2}
+@keyframes bus-flow{to{stroke-dashoffset:-36}}
+.cd-buslabel{fill:#64748B;font:600 11px var(--font-mono);letter-spacing:.1em}
+.cd-prog{transition:stroke-dashoffset var(--cd-ms,.45s) linear}
+.cd-proc[data-status=done] .cd-prog{opacity:0}
+@media (prefers-reduced-motion:reduce){.cd-bus.go{animation:none}}
+@media (max-width:560px){.panel-title{flex-wrap:wrap;row-gap:4px}.panel-title::after{display:none}.panel{padding:18px}}
+.howto-steps li::before{content:counter(s,decimal-leading-zero);border-radius:6px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,.28);font:600 12px var(--font-mono)}
+.howto-steps li{background:var(--surface2);border:1px solid var(--border);border-radius:10px}

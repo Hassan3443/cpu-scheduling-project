@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CPU Scheduling Comparison Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="./assets/css/style.css"/>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Compare CPU scheduling algorithms live">
@@ -32,20 +32,20 @@
 </div>
 
 <div class="tabs">
-  <button class="tab active" data-tab="input">① Setup</button>
-  <button class="tab" data-tab="gantt">② Timeline</button>
-  <button class="tab" data-tab="results">③ Numbers</button>
-  <button class="tab" data-tab="summary">④ Verdict</button>
-  <button class="tab" data-tab="scenarios">⑤ Test cases</button>
-  <button class="tab" data-tab="compare">⑥ All 5 algorithms</button>
-  <button class="tab" data-tab="howto">How to use ?</button>
+  <button class="tab active" data-tab="input"><span class="tab-idx">01</span><span class="tab-label">Setup</span></button>
+  <button class="tab" data-tab="gantt"><span class="tab-idx">02</span><span class="tab-label">Timeline</span></button>
+  <button class="tab" data-tab="results"><span class="tab-idx">03</span><span class="tab-label">Numbers</span></button>
+  <button class="tab" data-tab="summary"><span class="tab-idx">04</span><span class="tab-label">Verdict</span></button>
+  <button class="tab" data-tab="scenarios"><span class="tab-idx">05</span><span class="tab-label">Test cases</span></button>
+  <button class="tab" data-tab="compare"><span class="tab-idx">06</span><span class="tab-label">All 5 algorithms</span></button>
+  <span class="tab-divider" aria-hidden="true"></span><button class="tab tab-util" data-tab="howto"><span class="tab-label">How to use</span><span class="tab-help-mark" aria-hidden="true">?</span></button>
 </div>
 
 <div class="section active" id="sec-input">
   <ol class="steps" aria-label="How to use">
-    <li><b>1</b><span>Pick an example</span></li>
-    <li><b>2</b><span>Change any number</span></li>
-    <li><b>3</b><span>Read the result below. It updates as you type.</span></li>
+    <li><b>01</b><span><strong>Pick an example</strong>Load a preset workload below</span></li>
+    <li><b>02</b><span><strong>Change any number</strong>Edit arrival, burst or priority</span></li>
+    <li><b>03</b><span><strong>Read the result</strong>Everything updates as you type</span></li>
   </ol>
 
   <div class="panel">

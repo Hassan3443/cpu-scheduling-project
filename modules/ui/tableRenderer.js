@@ -42,14 +42,16 @@ export function renderResults(rr, pr, detectStarvationCb) {
   document.getElementById('metrics-row').innerHTML = metrics.map(m => {
     const better = m.rrV < m.prV ? 'rr' : m.prV < m.rrV ? 'pr' : 'tie';
     const badge  = better === 'rr' ? '↓ Round Robin wins' : better === 'pr' ? '↓ Priority wins' : '= Tie';
+    const lo = Math.min(m.rrV, m.prV), hi = Math.max(m.rrV, m.prV);
+    const delta = better !== 'tie' && hi > 0 ? ` <span class="delta">-${((hi - lo) / hi * 100).toFixed(1)}%</span>` : '';
     return `<div class="metric-card">
       <div class="metric-label">${m.label}</div>
       <div class="metric-compare">
-        <span class="metric-val rr">${m.rrV.toFixed(2)}</span>
+        <span class="metric-val rr${better === 'pr' ? ' loser' : ''}">${m.rrV.toFixed(2)}</span>
         <span class="vs">vs</span>
-        <span class="metric-val pr">${m.prV.toFixed(2)}</span>
+        <span class="metric-val pr${better === 'rr' ? ' loser' : ''}">${m.prV.toFixed(2)}</span>
       </div>
-      <div><span class="winner-badge ${better}">${badge}</span></div>
+      <div><span class="winner-badge ${better}">${badge}${delta}</span></div>
     </div>`;
   }).join('');
 
@@ -58,8 +60,10 @@ export function renderResults(rr, pr, detectStarvationCb) {
       `<tr><td><span class="pid-badge">${p.pid}</span></td><td>${p.at}</td><td>${p.bt}</td><td>${p.pr}</td><td>${p.wt}</td><td>${p.tat}</td><td>${p.rt}</td></tr>`
     ).join('');
     const avgs = `<tr class="avg-row"><td colspan="4">Average</td><td>${result.avgWt.toFixed(2)}</td><td>${result.avgTat.toFixed(2)}</td><td>${result.avgRt.toFixed(2)}</td></tr>`;
-    return `<div class="results-card">
-      <div class="results-card-header ${cls}">${cls === 'rr' ? '⬡ Round Robin' : '◆ Priority Scheduling'}</div>
+    const other = cls === 'rr' ? pr : rr;
+    const win = result.avgWt < other.avgWt ? ' is-winner' : '';
+    return `<div class="results-card${win}">
+      <div class="results-card-header ${cls}">${cls === 'rr' ? 'Round Robin' : 'Priority Scheduling'}${win ? '<span class="win-chip">Lower avg WT</span>' : ''}</div>
       <div style="overflow-x:auto">
       <table><thead><tr><th title="Process">PID</th><th title="Arrival time">AT</th><th title="Burst time: total CPU time needed">BT</th><th title="Priority, 1 = most urgent">PRI</th><th title="Waiting time: ready but not running">WT</th><th title="Turnaround time: arrival until finished">TAT</th><th title="Response time: arrival until first CPU time">RT</th></tr></thead>
       <tbody>${rows}${avgs}</tbody></table></div>
