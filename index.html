@@ -28,77 +28,63 @@
 </div>
 
 <div class="tabs">
-  <button class="tab active" data-tab="input">① Input</button>
-  <button class="tab" data-tab="gantt">② Gantt Charts</button>
-  <button class="tab" data-tab="results">③ Results</button>
-  <button class="tab" data-tab="summary">④ Summary</button>
-  <button class="tab" data-tab="scenarios">⑤ Scenarios</button>
-  <button class="tab" data-tab="compare">⑥ Compare all</button>
+  <button class="tab active" data-tab="input">① Setup</button>
+  <button class="tab" data-tab="gantt">② Timeline</button>
+  <button class="tab" data-tab="results">③ Numbers</button>
+  <button class="tab" data-tab="summary">④ Verdict</button>
+  <button class="tab" data-tab="scenarios">⑤ Test cases</button>
+  <button class="tab" data-tab="compare">⑥ All 5 algorithms</button>
 </div>
 
 <div class="section active" id="sec-input">
+  <ol class="steps" aria-label="How to use">
+    <li><b>1</b><span>Pick an example</span></li>
+    <li><b>2</b><span>Change any number</span></li>
+    <li><b>3</b><span>Read the result below. It updates as you type.</span></li>
+  </ol>
+
   <div class="panel">
-    <div class="panel-title">Time Quantum (Round Robin)</div>
+    <div class="panel-title">1. Pick an example</div>
+    <div class="presets" id="presets"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">2. Processes <span class="live-note">Edit any number. Lower priority number = more urgent.</span></div>
+    <div id="global-err" class="validation-alert"></div>
+    <div class="process-table-wrap">
+      <table id="process-table">
+        <thead>
+          <tr>
+            <th title="Name of the process">Process</th>
+            <th title="Arrival time: when the process enters the ready queue">Arrives at</th>
+            <th title="Burst time: how long the CPU must work on it in total">Needs (burst)</th>
+            <th title="Priority: 1 is the most urgent. Only Priority scheduling uses it">Priority</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="process-tbody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-accent" id="btn-add-process">+ Add a process</button>
+      <button class="btn btn-outline" id="btn-clear-all">Clear all</button>
+    </div>
     <div class="quantum-row">
-      <div class="form-group">
-        <label class="quantum-label">QUANTUM (q)</label>
-        <input type="number" id="quantum" value="2" min="1" placeholder="e.g. 2"/>
+      <label class="quantum-label" for="quantum" title="Round Robin gives each process at most this many time units before moving to the next one">Round Robin time slice (quantum)</label>
+      <div class="stepper">
+        <button class="btn btn-outline" id="q-minus" aria-label="Decrease quantum">−</button>
+        <input type="number" id="quantum" value="4" min="1" step="1" inputmode="numeric"/>
+        <button class="btn btn-outline" id="q-plus" aria-label="Increase quantum">+</button>
       </div>
       <div id="quantum-err" class="error-msg"></div>
     </div>
   </div>
 
   <div class="panel">
-    <div class="panel-title">Add Process</div>
-    <div id="global-err" class="validation-alert"></div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Process ID</label>
-        <input type="text" id="inp-pid" placeholder="e.g. P1"/>
-        <div class="error-msg" id="err-pid"></div>
-      </div>
-      <div class="form-group">
-        <label>Arrival Time</label>
-        <input type="number" id="inp-at" placeholder="e.g. 0" min="0"/>
-        <div class="error-msg" id="err-at"></div>
-      </div>
-      <div class="form-group">
-        <label>Burst Time</label>
-        <input type="number" id="inp-bt" placeholder="e.g. 5" min="1"/>
-        <div class="error-msg" id="err-bt"></div>
-      </div>
-      <div class="form-group">
-        <label>Priority (lower = urgent)</label>
-        <input type="number" id="inp-pr" placeholder="1–99" min="1"/>
-        <div class="error-msg" id="err-pr"></div>
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-accent" id="btn-add-process">+ Add Process</button>
-      <button class="btn btn-outline" id="btn-load-demo">Load Demo</button>
-      <button class="btn btn-outline" id="btn-clear-all">Clear All</button>
-    </div>
+    <div class="panel-title">3. Result at a glance <span class="live-note">Best value in each column is green. Hover a column title for its meaning.</span></div>
+    <div id="glance"><p class="live-note">Add a process to see results.</p></div>
+    <div class="btn-row"><button class="btn btn-run" id="btn-run" disabled>See the Gantt charts →</button></div>
   </div>
-
-  <div class="panel">
-    <div class="panel-title">Process Table <span class="live-note">click any number to edit, results update live</span></div>
-    <div class="process-table-wrap">
-      <table id="process-table">
-        <thead>
-          <tr>
-            <th>PID</th><th>Arrival Time</th><th>Burst Time</th><th>Priority</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="process-tbody">
-          <tr><td colspan="5" class="empty-state">No processes added yet. Add at least 2 to simulate.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <button class="btn btn-run" id="btn-run" disabled>
-    ▶ Run Simulation
-  </button>
 </div>
 
 <div class="section" id="sec-gantt">
@@ -144,6 +130,7 @@
     <p>Run the simulation first to see results.</p>
   </div>
   <div id="results-content" style="display:none">
+    <details class="glossary"><summary>What do WT, TAT and RT mean?</summary><dl><dt>WT, waiting time</dt><dd>Time a process spent ready but not running. Lower is better.</dd><dt>TAT, turnaround time</dt><dd>From arrival until the process finishes (waiting plus running).</dd><dt>RT, response time</dt><dd>From arrival until the process gets the CPU for the first time.</dd><dt>Context switch</dt><dd>The CPU changes from one process to a different one.</dd><dt>CPU utilisation</dt><dd>Share of the time span in which the CPU was busy, not idle.</dd></dl></details>
     <div id="starvation-banner"></div>
     <div class="metrics-row" id="metrics-row"></div>
     <div class="results-grid" id="results-grid"></div>

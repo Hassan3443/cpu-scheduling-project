@@ -8,14 +8,31 @@ import { detectStarvation, renderSummary } from '../../modules/analysis/analysis
 import { simulateRR } from '../../modules/algorithms/roundRobin.js';
 import { simulatePriority } from '../../modules/algorithms/priority.js';
 import { renderCompareAll } from '../../modules/ui/compareView.js';
+import { PRESETS } from '../../modules/input/presets.js';
+import { renderGlance } from '../../modules/ui/glance.js';
 import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../modules/testing/testScenarios.js';
 
 // Setup Initialization
 document.addEventListener('DOMContentLoaded', () => {
   buildScenariosTab();
-  renderTable(getProcesses());
+  buildPresets();
   attachEventListeners();
+  applyPreset(0);          // sensible default: the classic example, already simulated
 });
+
+function buildPresets() {
+  document.getElementById('presets').innerHTML = PRESETS.map((p, i) =>
+    `<button class="preset" data-preset="${i}"><b>${p.name}</b><span>${p.note}</span></button>`).join('');
+}
+
+function applyPreset(i) {
+  const p = PRESETS[i];
+  setProcesses(p.procs.map(x => ({ ...x })));
+  document.getElementById('quantum').value = p.quantum;
+  document.querySelectorAll('.preset').forEach((b, k) => b.classList.toggle('on', k === i));
+  refreshTableState();
+  runSimulation({ jump: false });
+}
 
 function attachEventListeners() {
   // Global Delegate Listener
@@ -23,6 +40,9 @@ function attachEventListeners() {
     // Tabs
     const tabEl = e.target.closest('.tab');
     if (tabEl) switchTab(tabEl.dataset.tab);
+
+    const pre = e.target.closest('.preset');
+    if (pre) applyPreset(+pre.dataset.preset);
 
     // Remove Process
     const btnDel = e.target.closest('.btn-del[data-action="remove"]');
@@ -50,20 +70,23 @@ function attachEventListeners() {
 
   // Direct Button Listeners
   document.getElementById('btn-add-process').addEventListener('click', () => {
-    if (handleAddProcess()) refreshTableState();
-  });
-
-  document.getElementById('btn-load-demo').addEventListener('click', () => {
-    loadDemoData();
-    document.getElementById('quantum').value = '4';
+    const procs = getProcesses();
+    let n = procs.length + 1;
+    while (procs.some(p => p.pid === 'P' + n)) n++;
+    procs.push({ pid: 'P' + n, at: 0, bt: 3, pr: 1 });
+    document.querySelectorAll('.preset').forEach(b => b.classList.remove('on'));
     refreshTableState();
   });
+  const bump = d => { const q = document.getElementById('quantum'); q.value = Math.max(1, (parseInt(q.value, 10) || 1) + d); liveRun(); };
+  document.getElementById('q-minus').addEventListener('click', () => bump(-1));
+  document.getElementById('q-plus').addEventListener('click', () => bump(1));
 
   document.getElementById('btn-clear-all').addEventListener('click', () => {
     clearAllProcesses();
     refreshTableState();
     ['gantt-placeholder','results-placeholder','summary-placeholder'].forEach(id => document.getElementById(id).style.display = '');
     ['gantt-content','results-content','summary-content'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById('glance').innerHTML = '<p class="live-note">Add a process to see results.</p>';
   });
 
   document.getElementById('btn-run').addEventListener('click', () => runSimulation());
@@ -90,6 +113,7 @@ function refreshTableState() {
   const procs = getProcesses();
   renderTable(procs);
   document.getElementById('btn-run').disabled = procs.length < 1;
+  if (!procs.length) document.getElementById('glance').innerHTML = '<p class="live-note">Add a process to see results.</p>';
   if (document.getElementById('gantt-content').style.display !== 'none') liveRun();
 }
 
@@ -115,9 +139,9 @@ function runSimulation(opts = {}) {
   gErr.classList.remove('show');
 
   if (!qVal || isNaN(qVal) || !Number.isInteger(+qVal) || +qVal < 1) {
-    gErr.textContent = 'Invalid Time Quantum. Must be a positive integer ≥ 1.';
+    gErr.textContent = 'The time slice (quantum) must be a whole number, 1 or more.';
     gErr.classList.add('show');
-    switchTab('input');
+    if (jump) switchTab('input');
     return;
   }
 
@@ -128,6 +152,7 @@ function runSimulation(opts = {}) {
   }
 
   const quantum = +qVal;
+  renderGlance(procs, quantum);
   const rrResult = simulateRR(procs, quantum);
   const prResult = simulatePriority(procs);
 
@@ -209,4 +234,5 @@ function loadAndRunScenario(idx) {
   renderResults(rrRes, prRes, detectStarvation);
   renderSummary(rrRes, prRes, quantum);
   renderCompareAll(procs, quantum);
+  renderGlance(procs, quantum);
 }

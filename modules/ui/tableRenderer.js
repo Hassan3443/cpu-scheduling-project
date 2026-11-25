@@ -6,7 +6,7 @@ export const COLORS = [
 export function renderTable(processes) {
   const tbody = document.getElementById('process-tbody');
   if (!processes.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No processes added yet. Add at least 1 to simulate.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No processes yet. Pick an example above or press Add a process.</td></tr>';
     return;
   }
   const cell = (p, f, min, max) => `<td><input class="cell-input" type="number" step="1" min="${min}"${max ? ` max="${max}"` : ''} value="${p[f]}" data-pid="${p.pid}" data-field="${f}" aria-label="${p.pid} ${f}"/></td>`;
@@ -14,7 +14,7 @@ export function renderTable(processes) {
     <tr>
       <td><span class="pid-badge">${p.pid}</span></td>
       ${cell(p, 'at', 0)}${cell(p, 'bt', 1)}${cell(p, 'pr', 1, 99)}
-      <td><button class="btn-del" data-action="remove" data-pid="${p.pid}">Remove</button></td>
+      <td><button class="btn-del" data-action="remove" data-pid="${p.pid}" title="Remove ${p.pid}" aria-label="Remove ${p.pid}">✕</button></td>
     </tr>
   `).join('');
 }
@@ -61,7 +61,7 @@ export function renderResults(rr, pr, detectStarvationCb) {
     return `<div class="results-card">
       <div class="results-card-header ${cls}">${cls === 'rr' ? '⬡ Round Robin' : '◆ Priority Scheduling'}</div>
       <div style="overflow-x:auto">
-      <table><thead><tr><th>PID</th><th>AT</th><th>BT</th><th>PRI</th><th>WT</th><th>TAT</th><th>RT</th></tr></thead>
+      <table><thead><tr><th title="Process">PID</th><th title="Arrival time">AT</th><th title="Burst time: total CPU time needed">BT</th><th title="Priority, 1 = most urgent">PRI</th><th title="Waiting time: ready but not running">WT</th><th title="Turnaround time: arrival until finished">TAT</th><th title="Response time: arrival until first CPU time">RT</th></tr></thead>
       <tbody>${rows}${avgs}</tbody></table></div>
     </div>`;
   };
