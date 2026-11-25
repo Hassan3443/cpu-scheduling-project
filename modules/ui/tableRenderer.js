@@ -9,12 +9,11 @@ export function renderTable(processes) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No processes added yet. Add at least 1 to simulate.</td></tr>';
     return;
   }
+  const cell = (p, f, min, max) => `<td><input class="cell-input" type="number" step="1" min="${min}"${max ? ` max="${max}"` : ''} value="${p[f]}" data-pid="${p.pid}" data-field="${f}" aria-label="${p.pid} ${f}"/></td>`;
   tbody.innerHTML = processes.map(p => `
     <tr>
       <td><span class="pid-badge">${p.pid}</span></td>
-      <td>${p.at}</td>
-      <td>${p.bt}</td>
-      <td>${p.pr}</td>
+      ${cell(p, 'at', 0)}${cell(p, 'bt', 1)}${cell(p, 'pr', 1, 99)}
       <td><button class="btn-del" data-action="remove" data-pid="${p.pid}">Remove</button></td>
     </tr>
   `).join('');

@@ -3,10 +3,21 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>C3 | Round Robin vs Priority Scheduling</title>
+<title>CPU Scheduling Comparison Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="./assets/css/style.css"/>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Compare CPU scheduling algorithms live">
+<meta property="og:description" content="Edit processes and the time quantum and watch FCFS, SJF, SRTF, Round Robin and Priority recompute with animated Gantt charts. Unit-tested against hand-computed examples.">
+<meta property="og:url" content="https://hassan3443.github.io/cpu-scheduling-project/">
+<meta property="og:image" content="https://hassan3443.github.io/cpu-scheduling-project/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Compare CPU scheduling algorithms live">
+<meta name="twitter:description" content="Edit processes and the time quantum and watch FCFS, SJF, SRTF, Round Robin and Priority recompute with animated Gantt charts. Unit-tested against hand-computed examples.">
+<meta name="twitter:image" content="https://hassan3443.github.io/cpu-scheduling-project/assets/og.png">
 </head>
 <body>
 
@@ -70,7 +81,7 @@
   </div>
 
   <div class="panel">
-    <div class="panel-title">Process Table</div>
+    <div class="panel-title">Process Table <span class="live-note">click any number to edit, results update live</span></div>
     <div class="process-table-wrap">
       <table id="process-table">
         <thead>
@@ -108,6 +119,7 @@
   </div>
 
   <div id="gantt-content" style="display:none">
+    <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-replay">↻ Replay animation</button><span class="live-note">Edit times in the Input tab: charts and metrics update live.</span></div>
     <div class="gantt-section">
       <div class="gantt-label rr"><span class="dot rr"></span>Round Robin — Ready Queue Snapshot</div>
       <div class="queue-display" id="rr-queue">Queue will appear after simulation.</div>

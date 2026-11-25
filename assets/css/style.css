@@ -285,3 +285,13 @@ tr:hover td { background: var(--surface2); }
 .cmp-table{min-width:560px}
 .tabs{overflow-x:auto;max-width:100%}
 .tab{white-space:nowrap;flex-shrink:0}
+
+/* dynamic UI */
+.cell-input{width:72px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 8px;font-family:'JetBrains Mono',monospace;font-size:.85rem}
+.cell-input:focus{outline:2px solid #6c63ff;outline-offset:1px}
+.cell-input.invalid{border-color:#ff6b8a;outline-color:#ff6b8a}
+.live-note{color:var(--muted);font-size:.74rem;font-weight:400;margin-left:.6rem;text-transform:none;letter-spacing:0}
+@keyframes bar-in{from{clip-path:inset(0 100% 0 0);opacity:.2}to{clip-path:inset(0 0 0 0);opacity:1}}
+.gantt-chart .gantt-bar{animation:bar-in .4s ease-out both}
+body{background-image:radial-gradient(900px 500px at 10% -10%,rgba(108,99,255,.12),transparent),radial-gradient(800px 500px at 100% 0,rgba(57,232,176,.08),transparent)}
+@media (prefers-reduced-motion:reduce){.gantt-chart .gantt-bar{animation:none}}

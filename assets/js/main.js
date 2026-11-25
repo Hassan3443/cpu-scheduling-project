@@ -66,16 +66,49 @@ function attachEventListeners() {
     ['gantt-content','results-content','summary-content'].forEach(id => document.getElementById(id).style.display = 'none');
   });
 
-  document.getElementById('btn-run').addEventListener('click', runSimulation);
+  document.getElementById('btn-run').addEventListener('click', () => runSimulation());
+
+  // Live mode: editing a cell or the quantum recomputes everything.
+  let timer;
+  const live = () => { clearTimeout(timer); timer = setTimeout(liveRun, 150); };
+  document.addEventListener('input', (e) => {
+    const c = e.target.closest('.cell-input');
+    if (c) {
+      const p = getProcesses().find(x => x.pid === c.dataset.pid);
+      const v = c.value.trim();
+      const n = Number(v);
+      const min = c.dataset.field === 'bt' || c.dataset.field === 'pr' ? 1 : 0;
+      const ok = v !== '' && Number.isInteger(n) && n >= min && (c.dataset.field !== 'pr' || n <= 99);
+      c.classList.toggle('invalid', !ok);
+      if (ok && p) { p[c.dataset.field] = n; live(); }
+    } else if (e.target.id === 'quantum') live();
+  });
+  document.getElementById('btn-replay').addEventListener('click', replayGantt);
 }
 
 function refreshTableState() {
   const procs = getProcesses();
   renderTable(procs);
   document.getElementById('btn-run').disabled = procs.length < 1;
+  if (document.getElementById('gantt-content').style.display !== 'none') liveRun();
 }
 
-function runSimulation() {
+// Re-run quietly (stay on the current tab) once a first simulation exists.
+function liveRun() {
+  if (!getProcesses().length) return;
+  const q = document.getElementById('quantum').value.trim();
+  if (!/^\d+$/.test(q) || +q < 1) return;
+  runSimulation({ jump: false });
+}
+
+function replayGantt() {
+  document.querySelectorAll('.gantt-chart').forEach(c => {
+    const html = c.innerHTML; c.innerHTML = ''; void c.offsetWidth; c.innerHTML = html;
+  });
+}
+
+function runSimulation(opts = {}) {
+  const { jump = true } = opts;
   const procs = getProcesses();
   const qVal = document.getElementById('quantum').value.trim();
   const gErr = document.getElementById('global-err');
@@ -126,7 +159,7 @@ function runSimulation() {
   renderSummary(rrResult, prResult, quantum);
 
   renderCompareAll(procs, quantum);
-  switchTab('gantt');
+  if (jump) switchTab('gantt');
 }
 
 function loadAndRunScenario(idx) {

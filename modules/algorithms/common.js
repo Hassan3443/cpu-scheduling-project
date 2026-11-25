@@ -1,6 +1,19 @@
 // Shared helpers for the time-stepped algorithms (FCFS, SJF, SRTF).
 
+// Throws a RangeError on input that would make a simulation wrong or endless.
+export function validateProcesses(procs) {
+  if (!Array.isArray(procs) || !procs.length) throw new RangeError('add at least one process');
+  const seen = new Set();
+  for (const p of procs) {
+    if (!p.pid || seen.has(p.pid)) throw new RangeError('process ids must be unique and non-empty');
+    seen.add(p.pid);
+    if (!Number.isInteger(p.at) || p.at < 0) throw new RangeError(`${p.pid}: arrival must be an integer >= 0`);
+    if (!Number.isInteger(p.bt) || p.bt < 1) throw new RangeError(`${p.pid}: burst must be an integer >= 1`);
+  }
+}
+
 export function prepare(procs) {
+  validateProcesses(procs);
   return procs.map((p, idx) => ({ ...p, rem: p.bt, wt: 0, tat: 0, rt: -1, idx }));
 }
 

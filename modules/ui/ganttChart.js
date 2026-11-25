@@ -28,6 +28,8 @@ export function renderGantt(containerId, timesId, legendId, timeline, colorMap) 
     }
     bar.innerHTML = `<span class="bar-pid">${seg.pid}</span><span class="bar-dur">${seg.end - seg.start}u</span>`;
     bar.title = `${seg.pid}: [${seg.start} → ${seg.end}]`;
+    bar.style.animationDelay = (seg.start / totalTime * 1.6).toFixed(2) + 's';
+    bar.style.animationDuration = Math.max(0.15, (seg.end - seg.start) / totalTime * 1.6).toFixed(2) + 's';
     container.appendChild(bar);
     timeSet.add(seg.start);
     timeSet.add(seg.end);
