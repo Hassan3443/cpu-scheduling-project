@@ -365,7 +365,6 @@ body{background-color:var(--bg);background-image:none}
 .howto-steps li::before{content:counter(s);position:absolute;left:.9rem;top:.75rem;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#14261f;display:grid;place-items:center;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.9rem}
 .howto-steps b{color:var(--text)}
 .howto-note{margin-top:1rem;color:var(--muted);font-size:.9rem}
-.howto-ar{margin-top:.8rem;padding:.8rem 1rem;border-radius:12px;background:var(--accent-dim);color:var(--text);font-size:1.02rem;line-height:1.7}
 .queue-tag{color:var(--text)}
 
 /* ===== CPU diagram + illustrations ===== */
@@ -420,3 +419,19 @@ label,.live-note,.cd-cap{font-size:var(--fs-xs)}
 .cd-panel{min-height:200px}
 @media (max-width:560px){.cd-controls .btn{flex:1 1 40%}.cd-controls input[type=range]{flex-basis:100%}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+
+/* ===== Animated background (transform/opacity only, calm, reduced-motion safe) ===== */
+.bg-fx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg-fx b{position:absolute;border-radius:50%;filter:blur(80px);opacity:.16;will-change:transform}
+.bg-fx .o1{width:520px;height:520px;left:-120px;top:-100px;background:#8f9bd6;animation:fx-a 38s ease-in-out infinite alternate}
+.bg-fx .o2{width:460px;height:460px;right:-100px;top:25%;background:#79bfa5;opacity:.12;animation:fx-b 46s ease-in-out infinite alternate}
+.bg-fx .o3{width:420px;height:420px;left:30%;bottom:-160px;background:#d9899b;opacity:.10;animation:fx-c 52s ease-in-out infinite alternate}
+.bg-fx .grid{position:absolute;inset:-48px;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;animation:fx-grid 60s linear infinite;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 75%)}
+.bg-fx i{position:absolute;left:var(--x);top:var(--y);width:8px;height:8px;border-radius:2px;background:var(--c);opacity:.35;animation:fx-dot var(--d) ease-in-out var(--dl) infinite alternate;will-change:transform}
+@keyframes fx-a{to{transform:translate(160px,120px) scale(1.15)}}
+@keyframes fx-b{to{transform:translate(-140px,-90px) scale(.9)}}
+@keyframes fx-c{to{transform:translate(120px,-100px) scale(1.1)}}
+@keyframes fx-grid{to{transform:translate(48px,48px)}}
+@keyframes fx-dot{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(60px,-40px) rotate(90deg)}100%{transform:translate(-30px,50px) rotate(180deg)}}
+@media (prefers-reduced-motion:reduce){.bg-fx b,.bg-fx .grid,.bg-fx i{animation:none!important}}
+@media (max-width:560px){.bg-fx b{filter:blur(60px)}.bg-fx i:nth-of-type(n+5){display:none}}
