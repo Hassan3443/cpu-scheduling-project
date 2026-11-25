@@ -576,3 +576,20 @@ body{font-size:15px}
 @media (max-width:560px){.panel-title{flex-wrap:wrap;row-gap:4px}.panel-title::after{display:none}.panel{padding:18px}}
 .howto-steps li::before{content:counter(s,decimal-leading-zero);border-radius:6px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,.28);font:600 12px var(--font-mono)}
 .howto-steps li{background:var(--surface2);border:1px solid var(--border);border-radius:10px}
+/* Hover feedback: calm, hover-capable devices only */
+.tab,.btn,.preset,.metric-card,.results-card,.scenario-card,.btn-del,.btn-load-scenario,input,select,tbody tr td,.howto-steps li{transition:transform .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease,opacity .2s ease}
+@media (hover:hover) and (pointer:fine){
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,.06);transform:translateY(-1px)}
+.tab:active{transform:translateY(0)}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(56,189,248,.16)}
+.btn:active:not(:disabled){transform:translateY(0);box-shadow:none}
+.preset:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.55);box-shadow:0 8px 20px rgba(0,0,0,.28),0 0 0 1px rgba(56,189,248,.18)}
+.metric-card:hover,.scenario-card:hover,.results-card:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.4);box-shadow:0 8px 22px rgba(0,0,0,.28)}
+input:hover:not(:focus):not(:disabled),select:hover:not(:focus):not(:disabled){border-color:rgba(56,189,248,.45)}
+input:focus,select:focus{box-shadow:0 0 0 3px rgba(56,189,248,.18)}
+tbody tr:hover td{background:rgba(56,189,248,.07)}
+tbody td:hover{background:rgba(56,189,248,.13)}
+.howto-steps li:hover{border-color:rgba(56,189,248,.4);transform:translateX(2px)}
+.btn-del:hover,.btn-load-scenario:hover{transform:translateY(-1px)}
+}
+@media (prefers-reduced-motion:reduce){.tab,.btn,.preset,.metric-card,.results-card,.scenario-card,.howto-steps li{transform:none!important}}
