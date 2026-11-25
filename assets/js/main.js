@@ -10,6 +10,7 @@ import { simulatePriority } from '../../modules/algorithms/priority.js';
 import { renderCompareAll } from '../../modules/ui/compareView.js';
 import { PRESETS } from '../../modules/input/presets.js';
 import { renderCpuDiagram } from '../../modules/ui/cpuDiagram.js';
+import { encodeSetup, decodeSetup } from '../../modules/ui/share.js';
 import { renderGlance } from '../../modules/ui/glance.js';
 import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../modules/testing/testScenarios.js';
 
@@ -18,7 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
   buildScenariosTab();
   buildPresets();
   attachEventListeners();
-  applyPreset(0);          // sensible default: the classic example, already simulated
+  const shared = decodeSetup(location.hash);
+  if (shared) {
+    setProcesses(shared.procs);
+    document.getElementById('quantum').value = shared.quantum;
+    refreshTableState();
+    runSimulation({ jump: false });
+  } else applyPreset(0);          // sensible default: the classic example, already simulated
 });
 
 function buildPresets() {
@@ -107,6 +114,12 @@ function attachEventListeners() {
       if (ok && p) { p[c.dataset.field] = n; live(); }
     } else if (e.target.id === 'quantum') live();
   });
+  const cp = document.getElementById('btn-copy-link');
+  if (cp) cp.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(location.href); cp.textContent = '✓ Link copied'; }
+    catch (e) { cp.textContent = 'Copy the address bar'; }
+    setTimeout(() => { cp.textContent = '🔗 Copy link to this setup'; }, 2000);
+  });
   document.getElementById('btn-replay').addEventListener('click', replayGantt);
 }
 
@@ -155,6 +168,7 @@ function runSimulation(opts = {}) {
   const quantum = +qVal;
   renderGlance(procs, quantum);
   renderCpuDiagram(procs.map(p => ({ ...p })), quantum);
+  try { history.replaceState(null, '', '#' + encodeSetup(procs, quantum)); } catch (e) { /* file:// */ }
   const rrResult = simulateRR(procs, quantum);
   const prResult = simulatePriority(procs);
 

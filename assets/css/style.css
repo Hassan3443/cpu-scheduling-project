@@ -389,3 +389,34 @@ body{background-color:var(--bg);background-image:none}
 .cd-idle{fill:var(--warn);font-size:13px;font-family:'JetBrains Mono',monospace}
 .cd-note{margin-top:.6rem;color:var(--muted);font-size:.88rem}
 @media (prefers-reduced-motion:reduce){.cd-proc{transition:none}.header .logo{animation:none}.cd-chip{transition:none}}
+
+/* ===== Design tokens, type scale (1.25), spacing (4px base), interaction states ===== */
+:root{
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;--s-7:48px;
+  --fs-xs:12px;--fs-sm:14px;--fs-md:16px;--fs-lg:20px;--fs-xl:25px;--fs-2xl:32px;
+  --focus:#9fd3c0;
+}
+body{line-height:1.5}
+h1,h2,h3{line-height:1.2}
+td,th,input,.cd-time,.cd-pid,.cd-rem,.bar-dur,.live-note,[class*="metric"],[class*="val"]{font-variant-numeric:tabular-nums}
+.btn{min-height:44px;transition:transform .12s,background .15s,opacity .15s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-accent{background:#79bfa5;color:#10151c}
+.btn-accent:hover:not(:disabled){background:#8ccdb4}
+:where(button,select,input,a,[tabindex]):focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:8px}
+label,.live-note,.cd-cap{font-size:var(--fs-xs)}
+.gantt-bar{border-radius:6px;outline:2px solid var(--surface);outline-offset:-1px;border-right:0}
+.gantt-bar .bar-dur{font-size:var(--fs-xs);opacity:.85}
+.gantt-bar .bar-pid{font-size:var(--fs-sm)}
+.cd-controls{gap:var(--s-3)}
+.cd-field{display:flex;align-items:center;gap:var(--s-2);font-size:var(--fs-sm)}
+.cd-controls .btn{padding:0 var(--s-4)}
+#cd-ring{will-change:stroke-dashoffset}
+.cd-proc{transition:transform var(--cd-ms,.45s) cubic-bezier(.16,1,.3,1);will-change:transform}
+.cd-strip{position:relative;height:30px;margin-top:var(--s-3);background:var(--surface2);border-radius:8px;overflow:hidden}
+.cd-strip span{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;border-left:2px solid;font:600 12px 'JetBrains Mono',monospace;color:var(--text);overflow:hidden}
+.cd-strip i{position:absolute;top:0;bottom:0;width:2px;background:#f0eff8;transition:left var(--cd-ms,.45s) linear;margin-left:-1px}
+.cd-panel{min-height:200px}
+@media (max-width:560px){.cd-controls .btn{flex:1 1 40%}.cd-controls input[type=range]{flex-basis:100%}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
