@@ -367,3 +367,25 @@ body{background-color:var(--bg);background-image:none}
 .howto-note{margin-top:1rem;color:var(--muted);font-size:.9rem}
 .howto-ar{margin-top:.8rem;padding:.8rem 1rem;border-radius:12px;background:var(--accent-dim);color:var(--text);font-size:1.02rem;line-height:1.7}
 .queue-tag{color:var(--text)}
+
+/* ===== CPU diagram + illustrations ===== */
+.header .logo{display:block;margin:0 auto .6rem;animation:logo-pulse 4s ease-in-out infinite}
+@keyframes logo-pulse{0%,100%{opacity:.85}50%{opacity:1}}
+.cd-controls{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;margin-bottom:.8rem}
+.cd-controls select{min-height:44px;background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:10px;padding:0 .6rem;font-size:1rem;margin-left:.4rem}
+.cd-controls input[type=range]{flex:1 1 180px;min-width:140px;accent-color:var(--accent)}
+.cd-time{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:.9rem}
+#cd-svg{width:100%;height:auto;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.cd-cap{fill:var(--muted);font-size:12px;letter-spacing:.12em;font-family:'JetBrains Mono',monospace}
+.cd-lane{fill:var(--surface2);stroke:var(--border2);stroke-dasharray:4 5}
+.cd-arrow{stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
+.cd-pin{stroke:#4a566f;stroke-width:4;stroke-linecap:round}
+.cd-chip{transition:filter .3s}.cd-chip.busy{filter:drop-shadow(0 0 10px rgba(121,191,165,.55))}
+.cd-proc{transition:transform .6s cubic-bezier(.4,.1,.2,1)}
+.cd-proc[data-status=incoming]{opacity:.55}.cd-proc[data-status=done]{opacity:.8}
+.cd-proc[data-status=running] circle{stroke-width:5}
+.cd-pid{fill:var(--text);font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.cd-rem{fill:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace}
+.cd-idle{fill:var(--warn);font-size:13px;font-family:'JetBrains Mono',monospace}
+.cd-note{margin-top:.6rem;color:var(--muted);font-size:.88rem}
+@media (prefers-reduced-motion:reduce){.cd-proc{transition:none}.header .logo{animation:none}.cd-chip{transition:none}}

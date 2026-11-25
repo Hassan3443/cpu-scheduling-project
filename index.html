@@ -22,6 +22,7 @@
 <body>
 
 <div class="header">
+  <svg class="logo" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><rect x="16" y="16" width="32" height="32" rx="7" fill="#2a3347" stroke="#79bfa5" stroke-width="3"/><rect x="26" y="26" width="12" height="12" rx="3" fill="#8f9bd6"/><path d="M24 16V8M32 16V8M40 16V8M24 56v-8M32 56v-8M40 56v-8M16 24H8M16 32H8M16 40H8M56 24h-8M56 32h-8M56 40h-8" stroke="#79bfa5" stroke-width="3" stroke-linecap="round"/></svg>
   <div class="badge">OS Course · Project C3</div>
   <h1>Round Robin vs Priority Scheduling</h1>
   <p>CPU Scheduling Comparison Simulator</p>
@@ -106,6 +107,7 @@
   </div>
 
   <div id="gantt-content" style="display:none">
+    <div class="panel cd-panel"><div class="panel-title">Watch the CPU work</div><div id="cd-diagram"></div></div>
     <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-replay">↻ Replay animation</button><span class="live-note">Edit times in the Input tab: charts and metrics update live.</span></div>
     <div class="gantt-section">
       <div class="gantt-label rr"><span class="dot rr"></span>Round Robin — Ready Queue Snapshot</div>

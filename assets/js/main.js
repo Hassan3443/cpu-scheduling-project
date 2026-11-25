@@ -9,6 +9,7 @@ import { simulateRR } from '../../modules/algorithms/roundRobin.js';
 import { simulatePriority } from '../../modules/algorithms/priority.js';
 import { renderCompareAll } from '../../modules/ui/compareView.js';
 import { PRESETS } from '../../modules/input/presets.js';
+import { renderCpuDiagram } from '../../modules/ui/cpuDiagram.js';
 import { renderGlance } from '../../modules/ui/glance.js';
 import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../modules/testing/testScenarios.js';
 
@@ -153,6 +154,7 @@ function runSimulation(opts = {}) {
 
   const quantum = +qVal;
   renderGlance(procs, quantum);
+  renderCpuDiagram(procs.map(p => ({ ...p })), quantum);
   const rrResult = simulateRR(procs, quantum);
   const prResult = simulatePriority(procs);
 
@@ -235,4 +237,5 @@ function loadAndRunScenario(idx) {
   renderSummary(rrRes, prRes, quantum);
   renderCompareAll(procs, quantum);
   renderGlance(procs, quantum);
+  renderCpuDiagram(procs.map(p => ({ ...p })), quantum);
 }
