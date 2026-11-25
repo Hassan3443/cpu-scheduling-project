@@ -1,6 +1,6 @@
 # Round Robin vs Priority Scheduling
 
-A modern CPU Scheduling comparison simulator built for the Operating Systems course project.
+A modern, interactive CPU scheduling simulator. Compare FCFS, SJF, SRTF, Round Robin and Priority scheduling on the same workload, with an animated CPU and ready-queue view, Gantt charts and per-process metrics.
 
 Built using HTML, CSS, and JavaScript ES6 Modules.
 
