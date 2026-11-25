@@ -20,15 +20,15 @@ test('share link rejects bad or hostile input', () => {
     assert.equal(decodeSetup(bad), null, bad);
 });
 test('equal priority and equal burst ties are broken by arrival then input order', () => {
-  const P = [{ pid: 'A', at: 0, bt: 4, pr: 2 }, { pid: 'B', at: 0, bt: 4, pr: 2 }, { pid: 'C', at: 0, bt: 4, pr: 2 }];
+  const P = [{ pid: 'P1', at: 0, bt: 4, pr: 2 }, { pid: 'P2', at: 0, bt: 4, pr: 2 }, { pid: 'P3', at: 0, bt: 4, pr: 2 }];
   const order = r => r.timeline.map(s => s.pid).join('');
-  assert.equal(order(simulateFCFS(P)), 'ABC');
-  assert.equal(order(simulateSJF(P)), 'ABC');
-  assert.equal(order(simulatePriority(P)), 'ABC');
+  assert.equal(order(simulateFCFS(P)), 'P1P2P3');
+  assert.equal(order(simulateSJF(P)), 'P1P2P3');
+  assert.equal(order(simulatePriority(P)), 'P1P2P3');
 });
 test('RR convention: arrival at the instant a slice ends is queued before the preempted process', () => {
-  const r = simulateRR([{ pid: 'A', at: 0, bt: 4, pr: 1 }, { pid: 'B', at: 2, bt: 2, pr: 1 }], 2);
-  assert.deepEqual(r.timeline.map(s => s.pid), ['A', 'B', 'A']);
+  const r = simulateRR([{ pid: 'P1', at: 0, bt: 4, pr: 1 }, { pid: 'P2', at: 2, bt: 2, pr: 1 }], 2);
+  assert.deepEqual(r.timeline.map(s => s.pid), ['P1', 'P2', 'P1']);
 });
 test('diagram snapshots are consistent for random workloads and every algorithm', () => {
   let seed = 7; const rnd = n => (seed = (seed * 1103515245 + 12345) % 2147483648) % n;
@@ -58,9 +58,9 @@ test('diagram snapshots are consistent for random workloads and every algorithm'
 });
 
 test('ready queue order shown matches RR convention (arrival ahead of preempted)', () => {
-  const P = [{ pid: 'A', at: 0, bt: 5, pr: 1 }, { pid: 'B', at: 2, bt: 3, pr: 2 }, { pid: 'C', at: 4, bt: 2, pr: 1 }];
+  const P = [{ pid: 'P1', at: 0, bt: 5, pr: 1 }, { pid: 'P2', at: 2, bt: 3, pr: 2 }, { pid: 'P3', at: 4, bt: 2, pr: 1 }];
   const tl = simulateRR(P, 2).timeline;
   const st = stateAt(P, tl, 5).filter(x => x.status === 'ready').sort((a, b) => a.since - b.since || (a.ran - b.ran) || a.at - b.at);
-  assert.deepEqual(st.map(x => x.pid), ['C', 'B']);
-  assert.deepEqual(tl.map(s => s.pid + s.start), ['A0', 'B2', 'A4', 'C6', 'B8', 'A9']);
+  assert.deepEqual(st.map(x => x.pid), ['P3', 'P2']);
+  assert.deepEqual(tl.map(s => s.pid + s.start), ['P10', 'P22', 'P14', 'P36', 'P28', 'P19']);
 });

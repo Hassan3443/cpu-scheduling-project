@@ -83,7 +83,7 @@ test('inputs are not mutated and results are deterministic', () => {
   }
 });
 test('compareAll returns the five algorithms and context switches count process changes only', () => {
-  const rows = compareAll([{ pid: 'A', at: 0, bt: 5, pr: 1 }], 2);
+  const rows = compareAll([{ pid: 'P1', at: 0, bt: 5, pr: 1 }], 2);
   assert.deepEqual(rows.map(r => r.key), ['fcfs', 'sjf', 'srtf', 'rr', 'pr']);
   assert.equal(ALGORITHMS.length, 5);
   for (const r of rows) assert.equal(r.contextSwitches, 0);   // one process split in slices is not a switch

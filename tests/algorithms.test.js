@@ -49,11 +49,11 @@ test('Priority (preemptive) on the demo workload', () => {
 });
 
 test('idle gap before the first arrival is handled', () => {
-  const procs = [{ pid: 'A', at: 3, bt: 2, pr: 1 }, { pid: 'B', at: 10, bt: 1, pr: 1 }];
+  const procs = [{ pid: 'P1', at: 3, bt: 2, pr: 1 }, { pid: 'P2', at: 10, bt: 1, pr: 1 }];
   const r = simulateFCFS(procs);
   assert.deepEqual(r.timeline.map(t => [t.pid, t.start, t.end]),
-    [['A', 3, 5], ['IDLE', 5, 10], ['B', 10, 11]]);
-  assert.equal(by(r, 'B').wt, 0);
+    [['P1', 3, 5], ['IDLE', 5, 10], ['P2', 10, 11]]);
+  assert.equal(by(r, 'P2').wt, 0);
 });
 
 test('single process', () => {
@@ -109,27 +109,27 @@ test('SRTF never has a worse average waiting time than FCFS or SJF', () => {
 });
 
 test('idle time before the first arrival shows in Round Robin and Priority too', () => {
-  const procs = [{ pid: 'A', at: 3, bt: 2, pr: 1 }, { pid: 'B', at: 10, bt: 1, pr: 1 }];
+  const procs = [{ pid: 'P1', at: 3, bt: 2, pr: 1 }, { pid: 'P2', at: 10, bt: 1, pr: 1 }];
   for (const r of [simulateRR(procs, 2), simulatePriority(procs)]) {
     assert.deepEqual(r.timeline.map(t => [t.pid, t.start, t.end]),
-      [['A', 3, 5], ['IDLE', 5, 10], ['B', 10, 11]]);
+      [['P1', 3, 5], ['IDLE', 5, 10], ['P2', 10, 11]]);
     close(r.cpuUtilization, 3 / 8);
   }
 });
 
 test('Round Robin puts a new arrival ahead of the preempted process (hand computed)', () => {
   // A(0,5) B(2,3) q=2: A 0-2, B 2-4, A 4-6, B 6-7, A 7-8
-  const r = simulateRR([{ pid: 'A', at: 0, bt: 5, pr: 1 }, { pid: 'B', at: 2, bt: 3, pr: 1 }], 2);
+  const r = simulateRR([{ pid: 'P1', at: 0, bt: 5, pr: 1 }, { pid: 'P2', at: 2, bt: 3, pr: 1 }], 2);
   assert.deepEqual(r.timeline.map(t => [t.pid, t.start, t.end]),
-    [['A', 0, 2], ['B', 2, 4], ['A', 4, 6], ['B', 6, 7], ['A', 7, 8]]);
-  assert.equal(by(r, 'A').wt, 3); assert.equal(by(r, 'B').wt, 2);
+    [['P1', 0, 2], ['P2', 2, 4], ['P1', 4, 6], ['P2', 6, 7], ['P1', 7, 8]]);
+  assert.equal(by(r, 'P1').wt, 3); assert.equal(by(r, 'P2').wt, 2);
 });
 
 test('bad input is rejected instead of looping forever', () => {
-  const ok = [{ pid: 'A', at: 0, bt: 2, pr: 1 }];
+  const ok = [{ pid: 'P1', at: 0, bt: 2, pr: 1 }];
   assert.throws(() => simulateRR(ok, 0), RangeError);
   assert.throws(() => simulateRR(ok, 1.5), RangeError);
-  assert.throws(() => simulateFCFS([{ pid: 'A', at: 0, bt: 0, pr: 1 }]), RangeError);
-  assert.throws(() => simulatePriority([{ pid: 'A', at: -1, bt: 2, pr: 1 }]), RangeError);
+  assert.throws(() => simulateFCFS([{ pid: 'P1', at: 0, bt: 0, pr: 1 }]), RangeError);
+  assert.throws(() => simulatePriority([{ pid: 'P1', at: -1, bt: 2, pr: 1 }]), RangeError);
   assert.throws(() => simulateSJF([ok[0], ok[0]]), RangeError);
 });

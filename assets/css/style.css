@@ -593,3 +593,15 @@ tbody td:hover{background:rgba(56,189,248,.13)}
 .btn-del:hover,.btn-load-scenario:hover{transform:translateY(-1px)}
 }
 @media (prefers-reduced-motion:reduce){.tab,.btn,.preset,.metric-card,.results-card,.scenario-card,.howto-steps li{transform:none!important}}
+/* Process table fits on phones: no sideways scroll, remove button visible */
+@media (max-width:560px){
+.process-table-wrap{overflow-x:visible}
+#process-table{width:100%;table-layout:fixed}
+#process-table th,#process-table td{padding:8px 3px}
+#process-table th{font-size:10px;letter-spacing:0;white-space:normal;line-height:1.2}
+#process-table th:nth-child(1),#process-table td:nth-child(1){width:23%}
+#process-table th:nth-child(5),#process-table td:nth-child(5){width:44px}
+#process-table .cell-input{width:100%;min-width:0;padding:0 2px;text-align:center}
+#process-table .pid-badge{font-size:12px;padding:3px 6px}
+#process-table .btn-del{min-width:34px;min-height:34px;padding:0}
+}

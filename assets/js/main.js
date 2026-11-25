@@ -25,7 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('quantum').value = shared.quantum;
     refreshTableState();
     runSimulation({ jump: false });
-  } else applyPreset(0);          // sensible default: the classic example, already simulated
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* file:// */ }
+  } else {
+    // A plain open or refresh always starts with P1 to P3; more are added with "Add a process".
+    setProcesses([{ pid: 'P1', at: 0, bt: 5, pr: 2 }, { pid: 'P2', at: 1, bt: 3, pr: 1 }, { pid: 'P3', at: 2, bt: 4, pr: 3 }]);
+    document.getElementById('quantum').value = 2;
+    refreshTableState();
+    runSimulation({ jump: false });
+  }
 });
 
 function buildPresets() {
@@ -116,7 +123,8 @@ function attachEventListeners() {
   });
   const cp = document.getElementById('btn-copy-link');
   if (cp) cp.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(location.href); cp.textContent = '✓ Link copied'; }
+    try { const link = location.origin + location.pathname + location.search + '#' + encodeSetup(getProcesses(), +document.getElementById('quantum').value);
+      await navigator.clipboard.writeText(link); cp.textContent = '✓ Link copied'; }
     catch (e) { cp.textContent = 'Copy the address bar'; }
     setTimeout(() => { cp.textContent = '🔗 Copy link to this setup'; }, 2000);
   });
@@ -168,7 +176,6 @@ function runSimulation(opts = {}) {
   const quantum = +qVal;
   renderGlance(procs, quantum);
   renderCpuDiagram(procs.map(p => ({ ...p })), quantum);
-  try { history.replaceState(null, '', '#' + encodeSetup(procs, quantum)); } catch (e) { /* file:// */ }
   const rrResult = simulateRR(procs, quantum);
   const prResult = simulatePriority(procs);
 

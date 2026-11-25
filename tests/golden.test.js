@@ -46,11 +46,11 @@ test('golden Priority (preemptive): urgent job preempts, lower urgency waits', (
   assert.deepEqual(col(r, 'wt'), [3, 0, 6]); close(r.avgWt, 3); close(r.avgTat, 19 / 3); close(r.avgRt, 2);
 });
 test('golden: equal priorities behave like FCFS', () => {
-  const procs = [{ pid: 'A', at: 0, bt: 4, pr: 2 }, { pid: 'B', at: 1, bt: 2, pr: 2 }, { pid: 'C', at: 2, bt: 1, pr: 2 }];
+  const procs = [{ pid: 'P1', at: 0, bt: 4, pr: 2 }, { pid: 'P2', at: 1, bt: 2, pr: 2 }, { pid: 'P3', at: 2, bt: 1, pr: 2 }];
   assert.deepEqual(segs(simulatePriority(procs)), segs(simulateFCFS(procs)));
 });
 test('golden: RR with a quantum larger than every burst equals FCFS', () => {
-  const procs = [{ pid: 'A', at: 0, bt: 4, pr: 1 }, { pid: 'B', at: 1, bt: 2, pr: 1 }, { pid: 'C', at: 9, bt: 3, pr: 1 }];
+  const procs = [{ pid: 'P1', at: 0, bt: 4, pr: 1 }, { pid: 'P2', at: 1, bt: 2, pr: 1 }, { pid: 'P3', at: 9, bt: 3, pr: 1 }];
   assert.deepEqual(segs(simulateRR(procs, 100)), segs(simulateFCFS(procs)));
 });
 test('golden: all arrive together, ties broken by input order', () => {
