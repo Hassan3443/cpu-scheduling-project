@@ -19,6 +19,6 @@ export function switchTab(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
-  const tabs = ['input','gantt','results','summary','scenarios'];
+  const tabs = ['input','gantt','results','summary','scenarios','compare'];
   document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
 }

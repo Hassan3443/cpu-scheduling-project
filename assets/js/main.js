@@ -7,6 +7,7 @@ import { renderGantt, renderMiniGantt } from '../../modules/ui/ganttChart.js';
 import { detectStarvation, renderSummary } from '../../modules/analysis/analysis.js';
 import { simulateRR } from '../../modules/algorithms/roundRobin.js';
 import { simulatePriority } from '../../modules/algorithms/priority.js';
+import { renderCompareAll } from '../../modules/ui/compareView.js';
 import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../modules/testing/testScenarios.js';
 
 // Setup Initialization
@@ -124,6 +125,7 @@ function runSimulation() {
   document.getElementById('summary-content').style.display = 'block';
   renderSummary(rrResult, prResult, quantum);
 
+  renderCompareAll(procs, quantum);
   switchTab('gantt');
 }
 
@@ -173,4 +175,5 @@ function loadAndRunScenario(idx) {
 
   renderResults(rrRes, prRes, detectStarvation);
   renderSummary(rrRes, prRes, quantum);
+  renderCompareAll(procs, quantum);
 }

@@ -19,6 +19,8 @@ https://hassan3443.github.io/cpu-scheduling-project/
 * Interactive process input table
 * Round Robin Scheduling simulation
 * Preemptive Priority Scheduling simulation
+* **Compare all** tab: FCFS, SJF, SRTF, Round Robin and Priority on the same workload, with context switches and CPU utilisation
+* Automated tests (`npm test`) and GitHub Actions CI
 * Dynamic Gantt Charts
 * Waiting Time (WT) calculation
 * Turnaround Time (TAT) calculation
@@ -68,18 +70,27 @@ cpu-scheduling-project/
 ├── assets/
 │   ├── css/style.css
 │   ├── js/main.js
-│   └── screenshots/gantt-charts.png
+│   └── screenshots/
+├── tests/algorithms.test.js
+├── .github/workflows/test.yml
+├── package.json                      # only for npm test
 └── modules/
     ├── input/inputManager.js          # Input and validation
     ├── algorithms/
     │   ├── roundRobin.js
-    │   └── priority.js
+    │   ├── priority.js
+    │   ├── fcfs.js
+    │   ├── sjf.js                    # SJF and SRTF
+    │   └── common.js
     ├── ui/
     │   ├── inputUI.js
+    │   ├── compareView.js
     │   ├── ganttChart.js
     │   └── tableRenderer.js
     ├── testing/testScenarios.js       # 5 built-in scenarios
-    └── analysis/analysis.js           # Comparison and starvation check
+    └── analysis/
+        ├── analysis.js               # RR vs Priority comparison and starvation check
+        └── compareAll.js             # All five algorithms
 ```
 
 ---
@@ -117,6 +128,30 @@ The **Load Demo** button fills this workload. Results below are for a quantum of
 Priority scheduling gives lower averages here, but P3 (the lowest priority) waits 15 units and only starts at time 17. Round Robin starts every process within the first rotation. This is the fairness vs urgency trade-off the project is about.
 
 ![Gantt charts for the demo workload](assets/screenshots/gantt-charts.png)
+
+## All five algorithms on the same workload
+
+The **Compare all** tab runs these on the workload above (Round Robin with q = 4). The values are the ones the tests check.
+
+| Algorithm | Avg WT | Avg TAT | Avg RT | Context switches |
+| --------- | ------ | ------- | ------ | ---------------- |
+| FCFS | 8.75 | 15.25 | 8.75 | 3 |
+| SJF (non-preemptive) | 7.75 | 14.25 | 7.75 | 3 |
+| SRTF (preemptive SJF) | 6.50 | 13.00 | 4.25 | 4 |
+| Round Robin (q=4) | 11.75 | 18.25 | 4.50 | 7 |
+| Priority (preemptive) | 6.50 | 13.00 | 4.25 | 4 |
+
+SRTF and Priority happen to tie on this workload. Round Robin has the worst averages but the most even sharing of the CPU.
+
+![Compare all tab](assets/screenshots/compare-all.png)
+
+## Tests
+
+```bash
+npm test
+```
+
+Uses Node's built-in test runner (Node 18+), no dependencies. It checks hand-computed results for every algorithm on the demo workload, idle gaps, a single process, and properties on 200 random workloads per algorithm: turnaround = waiting + burst, every process receives exactly its burst time, slices never overlap or start before arrival, and SRTF never has a worse average waiting time than FCFS or SJF.
 
 ---
 
