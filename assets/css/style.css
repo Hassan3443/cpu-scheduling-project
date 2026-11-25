@@ -142,8 +142,8 @@ tr:hover td { background: var(--surface2); }
 .algo-card.rr .label { color: var(--rr); }
 .algo-card.pr .label { color: var(--pr); }
 .algo-card .name { font-weight: 700; font-size: 1rem; }
-.algo-card.rr .name { color: #a5a0ff; }
-.algo-card.pr .name { color: #ff9fb3; }
+.algo-card.rr .name { color: #aab4e6; }
+.algo-card.pr .name { color: #e3a3b1; }
 
 /* ── Gantt ───────────────────────────────────────── */
 .gantt-section { margin-bottom: 2rem; }
@@ -343,3 +343,27 @@ th[title]{cursor:help}
 }
 .quantum-label{letter-spacing:0;text-transform:none;font-family:'Syne',sans-serif}
 .btn-del{min-width:44px;min-height:44px;font-size:1rem}
+
+/* ===== Calm palette: softer, less saturated, comfortable contrast ===== */
+:root{
+  --bg:#181c26;--surface:#202533;--surface2:#283042;--surface3:#303a4f;
+  --border:rgba(210,220,240,.14);--border2:rgba(210,220,240,.22);
+  --text:#e6e9f2;--muted:#a7b0c4;
+  --rr:#8f9bd6;--rr-dim:rgba(143,155,214,.16);--rr-glow:rgba(143,155,214,.25);
+  --pr:#d9899b;--pr-dim:rgba(217,137,155,.16);--pr-glow:rgba(217,137,155,.25);
+  --accent:#79bfa5;--accent-dim:rgba(121,191,165,.14);--warn:#d6b073;--warn-dim:rgba(214,176,115,.16)}
+body{background-color:var(--bg);background-image:none}
+.header h1{background:linear-gradient(135deg,#e6e9f2 0%,#a9b4e6 55%,#d9a0ae 100%);-webkit-background-clip:text;background-clip:text}
+.steps b{background:var(--accent);color:#14261f}
+.btn-accent,.btn-run{background:var(--accent)!important;color:#14261f!important}
+.cmp-table td.best{color:#9ad8c0}
+.preset.on{background:rgba(121,191,165,.12)}
+.quantum-row{background:transparent}
+.howto-lead{color:var(--text);margin-bottom:1rem;font-size:1.02rem}
+.howto-steps{counter-reset:s;list-style:none;display:grid;gap:.7rem}
+.howto-steps li{counter-increment:s;position:relative;padding:.8rem 1rem .8rem 3.2rem;background:var(--surface2);border-radius:12px;color:var(--muted);line-height:1.5}
+.howto-steps li::before{content:counter(s);position:absolute;left:.9rem;top:.75rem;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#14261f;display:grid;place-items:center;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.howto-steps b{color:var(--text)}
+.howto-note{margin-top:1rem;color:var(--muted);font-size:.9rem}
+.howto-ar{margin-top:.8rem;padding:.8rem 1rem;border-radius:12px;background:var(--accent-dim);color:var(--text);font-size:1.02rem;line-height:1.7}
+.queue-tag{color:var(--text)}

@@ -34,6 +34,7 @@
   <button class="tab" data-tab="summary">④ Verdict</button>
   <button class="tab" data-tab="scenarios">⑤ Test cases</button>
   <button class="tab" data-tab="compare">⑥ All 5 algorithms</button>
+  <button class="tab" data-tab="howto">? How to use</button>
 </div>
 
 <div class="section active" id="sec-input">
@@ -165,6 +166,23 @@
     <p>Run the simulation first to compare FCFS, SJF, SRTF, Round Robin and Priority on the same workload.</p>
   </div>
   <div id="compare-content" style="display:none"></div>
+</div>
+
+<div class="section" id="sec-howto">
+  <div class="panel howto">
+    <div class="panel-title">How to use this simulator</div>
+    <p class="howto-lead">It shows how a CPU decides which process runs next, and compares five scheduling methods on the same list of processes.</p>
+    <ol class="howto-steps">
+      <li><b>Pick an example</b> on the Setup tab, or press "Add a process" to build your own list.</li>
+      <li><b>Edit the numbers.</b> <em>Arrives at</em> is when the process shows up, <em>Needs</em> is how long it must run, <em>Priority</em> 1 is the most urgent.</li>
+      <li><b>Set the time slice (quantum)</b> for Round Robin. Each process runs at most this long before the next one gets a turn.</li>
+      <li><b>Read "Result at a glance".</b> It compares all five algorithms. The green number is the best in its column. Lower is better for wait, turnaround and response.</li>
+      <li><b>Open the Timeline tab</b> to see who ran when. Gray blocks marked IDLE mean the CPU had nothing to run. Press Replay to watch it again.</li>
+      <li><b>Open Numbers, Verdict and All 5 algorithms</b> for per-process details and a short written comparison.</li>
+    </ol>
+    <p class="howto-note">Everything updates as you type. Nothing is saved or sent anywhere. Time units are abstract (not seconds).</p>
+    <p class="howto-ar" dir="rtl" lang="ar">الطريقة: اختار مثال جاهز أو أضف عمليات بنفسك، وغيّر الأرقام، وشوف النتيجة تتحدث على طول. الرقم الأخضر هو الأفضل، والأقل أحسن.</p>
+  </div>
 </div>
 
 <script type="module" src="./assets/js/main.js"></script>
