@@ -1,7 +1,14 @@
 export const COLORS = [
-  '#38BDF8','#34D399','#A78BFA','#FBBF24','#FB7185','#2DD4BF',
-  '#60A5FA','#F0ABFC','#A3E635','#FDBA74'
+  '#0E9AD0','#1AA564','#D63D95','#F2A100','#7C5CE6',
+  '#0F9D9A','#E4572E','#6B8E23','#B5651D','#4361EE'
 ];
+
+// Dark readable text colour for a process colour (about 7:1 on its pale tint).
+export function inkOf(hex) {
+  const n = parseInt(hex.slice(1), 16), ink = [16, 35, 58], k = 0.66;
+  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v, i) => Math.round(v * (1 - k) + ink[i] * k));
+  return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
+}
 
 export function renderTable(processes) {
   const tbody = document.getElementById('process-tbody');
