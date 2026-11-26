@@ -39,6 +39,7 @@
   </div>
   <div class="hero-cta">
     <div class="theme-switch" role="group" aria-label="Colour theme"><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button><button type="button" data-theme-set="dusk" aria-pressed="true">Dusk</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button></div>
+    <div class="sound-ctl"><button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound effects"><span class="st-ico" aria-hidden="true"></span><span class="st-label">Sound on</span></button><input type="range" id="sound-vol" min="0" max="100" value="30" aria-label="Sound volume"/></div>
     <button class="btn btn-accent btn-big" id="btn-watch">&#9654; Watch the CPU run</button>
     <span class="hero-hint">Opens the Timeline and starts playing</span>
   </div>
@@ -127,19 +128,20 @@
     <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-replay">↻ Replay animation</button><span class="live-note">Change the numbers in the left panel and everything here updates.</span></div>
     <div class="legend legend-shared" id="legend-rr" aria-label="Process colors"></div>
     <div class="gantt-section">
-      <div class="gantt-label rr"><span class="dot rr"></span>Round Robin: ready queue at the end of the last slice</div>
-      <div class="queue-display" id="rr-queue">Queue will appear after simulation.</div>
       <div class="gantt-label rr" style="margin-top:12px"><span class="dot rr"></span>Round Robin Gantt Chart</div>
       <div class="gantt-chart" id="gantt-rr"></div>
       <div class="gantt-times" id="times-rr"></div>
-      <div class="lanes" id="lanes-rr"></div>
+      <details class="more-fold"><summary>More detail: ready queue and per-process timeline</summary>
+      <div class="gantt-label rr"><span class="dot rr"></span>Round Robin: ready queue at the end of the last slice</div>
+      <div class="queue-display" id="rr-queue">Queue will appear after simulation.</div>
+      <div class="lanes" id="lanes-rr"></div></details>
     </div>
 
     <div class="gantt-section" style="margin-top:2rem">
       <div class="gantt-label pr"><span class="dot pr"></span>Priority Scheduling Gantt Chart</div>
       <div class="gantt-chart" id="gantt-pr"></div>
       <div class="gantt-times" id="times-pr"></div>
-      <div class="lanes" id="lanes-pr"></div>
+      <details class="more-fold"><summary>More detail: per-process timeline</summary><div class="lanes" id="lanes-pr"></div></details>
     </div>
   </div>
   <div class="next-row"><button class="btn btn-outline" data-goto="results">Next: the numbers →</button></div>
@@ -215,5 +217,7 @@
 </div>
 
 <script type="module" src="./assets/js/main.js"></script>
+<script src="assets/js/fold.js"></script>
+<script src="assets/js/cardplay.js"></script>
 </body>
 </html>

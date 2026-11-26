@@ -164,6 +164,16 @@ function setT(t, snap = false) {
     const bus = document.getElementById('cd-bus'); bus.classList.remove('go'); if (preempt) { void bus.getBoundingClientRect(); bus.classList.add('go'); }
   } else latch.setAttribute('class', 'cd-latch');
   ctx.lastPid = nowPid;
+  // sound and effect cues: only for a forward step of exactly one time unit (play or Step)
+  const prevStatus = ctx.prevStatus || {};
+  if (!snap && ctx.prevT !== undefined && t === ctx.prevT + 1) {
+    const cues = [];
+    st.forEach(s => { const was = prevStatus[s.pid]; if (was === 'incoming' && s.status !== 'incoming') cues.push('arrive'); if (was && was !== 'done' && s.status === 'done') cues.push('done'); });
+    if (nowPid && nowPid !== prevPid) cues.push(prevPid && st.some(s => s.pid === prevPid && s.status === 'ready') && ctx.key !== 'fcfs' && ctx.key !== 'sjf' ? 'preempt' : 'dispatch');
+    if (t >= ctx.total && ctx.total > 0) cues.push('finish');
+    if (cues.length) document.dispatchEvent(new CustomEvent('cpu-fx', { detail: { cues } }));
+  }
+  ctx.prevT = t; ctx.prevStatus = Object.fromEntries(st.map(s => [s.pid, s.status]));
   ring.setAttribute('data-quantum', ctx.key === 'rr' && cur && (t - cur.start) >= ctx.quantum - 1 && ctx.quantum > 1 ? 'critical' : '');
   document.getElementById('cd-idle').textContent = !cur && t < ctx.total ? 'CPU idle' : '';
   document.getElementById('cd-time').textContent = `t = ${t} of ${ctx.total}`;

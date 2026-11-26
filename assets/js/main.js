@@ -1,3 +1,4 @@
+import '../../modules/ui/fx.js';
 import { 
   getProcesses, setProcesses, handleAddProcess, removeProcess, clearAllProcesses, loadDemoData 
 } from '../../modules/input/inputManager.js';
@@ -158,7 +159,7 @@ function attachEventListeners() {
     catch (e) { cp.textContent = 'Copy the address bar'; }
     setTimeout(() => { cp.textContent = 'Copy link to this setup'; }, 2000);
   });
-  document.getElementById('btn-replay').addEventListener('click', replayGantt);
+  
 }
 
 function refreshTableState() {

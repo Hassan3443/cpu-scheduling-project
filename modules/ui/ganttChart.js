@@ -174,6 +174,7 @@ if (typeof document !== 'undefined') {
       const head = b.querySelector('.ln-head'); if (!head) return;
       const mine = b.closest('#lanes-rr') ? key === 'rr' : b.closest('#lanes-pr') ? key === 'pr' : false;
       const tot = +b.dataset.total;
+      head.hidden = true; return; // the top player does not drive the cards; each card has its own Play
       head.hidden = !mine || !tot;
       if (mine && tot) head.style.left = (Math.min(t, tot) / tot * 100) + '%';
     });
