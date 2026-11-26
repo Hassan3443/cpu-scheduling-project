@@ -50,7 +50,7 @@ export function renderCpuDiagram(procs, quantum) {
     </div>
     <svg id="cd-svg" viewBox="0 0 900 266" role="img" aria-labelledby="cd-title">
       <title id="cd-title">Processes move from the ready queue to the CPU, then to done</title>
-      <defs><linearGradient id="chipg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E4ECF8"/><stop offset="1" stop-color="#C9D7EB"/></linearGradient></defs>
+      <defs><linearGradient id="chipg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--chip-a)"/><stop offset="1" style="stop-color:var(--chip-b)"/></linearGradient></defs>
       <text class="cd-cap" x="30" y="30">INCOMING</text><text class="cd-cap" x="290" y="30">READY QUEUE</text>
       <text class="cd-cap" x="600" y="30">CPU</text><text class="cd-cap" x="780" y="30">DONE</text>
       <rect class="cd-lane" x="20" y="45" width="110" height="170" rx="12"/>
@@ -59,10 +59,10 @@ export function renderCpuDiagram(procs, quantum) {
       <polygon id="cd-latch" class="cd-latch" points="596,70 714,70 722,78 722,182 714,190 596,190 588,182 588,78 596,70" fill="none"/>
       <path class="cd-trace" d="M130 130 H168"/><path class="cd-trace" d="M710 130 H768"/><path class="cd-arrow sm" d="M160 123 L168 130 L160 137"/><path class="cd-arrow sm" d="M760 123 L768 130 L760 137"/>
       <path class="cd-bus" id="cd-bus" d="M655 192 V236 H350 V168" fill="none"/><path class="cd-arrow sm" d="M343 177 L350 168 L357 177"/><text class="cd-buslabel" x="500" y="231" text-anchor="middle">PREEMPT / SLICE END</text>
-      <g class="cd-chip"><polygon points="614,75 696,75 710,89 710,171 696,185 614,185 600,171 600,89" fill="url(#chipg)" stroke="#8FA3BF" stroke-width="1.5"/>
+      <g class="cd-chip"><polygon class="chip-body" points="614,75 696,75 710,89 710,171 696,185 614,185 600,171 600,89" fill="url(#chipg)" stroke-width="1.5"/>
         ${[0,1,2,3].map(i => `<path class="cd-pin" d="M${618 + i * 25} 75 v-14 M${618 + i * 25} 185 v14 M600 ${93 + i * 25} h-14 M710 ${93 + i * 25} h14"/>`).join('')}
-        <rect x="620" y="95" width="70" height="70" rx="8" fill="#FFFFFF" stroke="#8FA3BF"/><path class="cd-die-trace" d="M626 108 H640 V100 M684 108 H670 V100 M626 152 H640 V160 M684 152 H670 V160"/><circle cx="627" cy="102" r="1.8" class="cd-die-dot"/><circle cx="683" cy="102" r="1.8" class="cd-die-dot"/><circle cx="627" cy="158" r="1.8" class="cd-die-dot"/><circle cx="683" cy="158" r="1.8" class="cd-die-dot"/></g>
-      <g transform="translate(655 130) rotate(-90)"><circle id="cd-ring" r="32" pathLength="100" fill="none" stroke="#3D3DF0" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100" opacity="0"/></g>
+        <rect class="chip-die" x="620" y="95" width="70" height="70" rx="8"/><path class="cd-die-trace" d="M626 108 H640 V100 M684 108 H670 V100 M626 152 H640 V160 M684 152 H670 V160"/><circle cx="627" cy="102" r="1.8" class="cd-die-dot"/><circle cx="683" cy="102" r="1.8" class="cd-die-dot"/><circle cx="627" cy="158" r="1.8" class="cd-die-dot"/><circle cx="683" cy="158" r="1.8" class="cd-die-dot"/></g>
+      <g transform="translate(655 130) rotate(-90)"><circle id="cd-ring" r="32" pathLength="100" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100" opacity="0"/></g>
       <rect class="cd-lane" x="770" y="45" width="110" height="170" rx="12"/>
       <g id="cd-procs"></g>
       <text class="cd-idle" id="cd-idle" x="655" y="260" text-anchor="middle"></text>

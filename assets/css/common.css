@@ -1,0 +1,15 @@
+/* shared by all themes: fonts, focus ring, chip colours, theme switch */
+:root{--font-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--font-sans:'Figtree','Segoe UI',system-ui,sans-serif;--font-mono:'Figtree','Segoe UI',system-ui,sans-serif;
+  --chip-a:#3b4763;--chip-b:#2a3347;--chip-stroke:#323B4D;--die-fill:#202533;--die-stroke:#4a566f;--ring:#38BDF8}
+body{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+*{font-family:var(--font-sans)!important}
+h1,h2,h3,h4,.pane-title,.panel-title,.kpi-v,.preset b,.pid-badge,.ln-name,.rq-pill,.gantt-label,.results-card-header,.algo-card .name,.metric-val,.quantum-label,.bar-pid,.summary-block h4,.conclusion h3,.scenario-name,.howto-lead{font-family:var(--font-display)!important}
+#cd-ring{stroke:var(--ring)}
+.cd-chip rect.chip-die{fill:var(--die-fill);stroke:var(--die-stroke)}
+.cd-chip polygon.chip-body{stroke:var(--chip-stroke)}
+.c-rr{color:#aab4e6}.c-pr{color:#e3a3b1}
+.theme-switch{display:inline-flex;gap:2px;padding:3px;border-radius:10px;border:1px solid var(--border2,#3A4354);background:rgba(0,0,0,.25);align-self:flex-end}
+.theme-switch button{min-height:32px;padding:0 12px;border:0;border-radius:7px;background:transparent;color:var(--muted);font-weight:600;font-size:13px;cursor:pointer;box-shadow:none}
+.theme-switch button:hover{color:var(--text)}
+.theme-switch button[aria-pressed=true]{background:var(--accent);color:#fff}
+.hero-cta .theme-switch{margin-bottom:4px}

@@ -6,9 +6,13 @@
 <meta name="theme-color" content="#0B0D10"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CPU Scheduling Comparison Simulator</title>
+<script>try{var q=location.search.match(/theme=(dark|dusk|light)/);var t=q?q[1]:localStorage.getItem('cpu-theme');document.documentElement.dataset.theme=(t==='dark'||t==='dusk'||t==='light')?t:'dusk'}catch(e){document.documentElement.dataset.theme='dusk'}</script>
 <link rel="stylesheet" href="./assets/fonts/fonts.css"/>
 <link rel="stylesheet" href="./assets/css/style.css"/>
-<link rel="stylesheet" href="./assets/css/daylight.css"/>
+<link rel="stylesheet" href="./assets/css/common.css"/>
+<link rel="stylesheet" href="./assets/css/theme-dusk.css"/>
+<link rel="stylesheet" href="./assets/css/theme-light.css"/>
+<link rel="stylesheet" href="./assets/css/edges.css"/>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Compare CPU scheduling algorithms live">
 <meta property="og:description" content="Edit processes and the time quantum and watch FCFS, SJF, SRTF, Round Robin and Priority recompute with animated Gantt charts. Unit-tested against hand-computed examples.">
@@ -34,6 +38,7 @@
     </div>
   </div>
   <div class="hero-cta">
+    <div class="theme-switch" role="group" aria-label="Colour theme"><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button><button type="button" data-theme-set="dusk" aria-pressed="true">Dusk</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button></div>
     <button class="btn btn-accent btn-big" id="btn-watch">&#9654; Watch the CPU run</button>
     <span class="hero-hint">Opens the Timeline and starts playing</span>
   </div>

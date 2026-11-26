@@ -1,0 +1,29 @@
+/* clear, consistent borders and spacing in every theme (loaded last) */
+:root{--edge:#4F5D78}
+html[data-theme="dusk"]{--edge:#7589AE}
+html[data-theme="light"]{--edge:#8A9FBD}
+html[data-theme] :is(.hero,.setup-pane,.panel,.kpi,.results-card,.metric-card,.cmp-wrap,.cmp-bars,.scenario-card,.conclusion,.gantt-chart,.cd-strip,.scenario-gantt-mini,.cmp-gantt-bar,.quantum-row,.preset,.nf,.steps li,.howto-steps li,.legend-shared,.pane-toggle,.theme-switch,.tab-help,.glance-more,.process-table-wrap,.setup-pane #process-table tr,.metric-mini,.rq-box,.starv-banner){border-color:var(--edge)!important;border-width:1.5px!important;border-style:solid!important}
+html[data-theme] :is(.algo-card,.summary-block,.welcome,.tab-intro,.intro,.tab-note){border-top:1.5px solid var(--edge)!important;border-right:1.5px solid var(--edge)!important;border-bottom:1.5px solid var(--edge)!important}
+html[data-theme] :is(.algo-card,.summary-block,.welcome,.tab-intro,.intro,.tab-note){border-left-width:5px!important}
+html[data-theme] #cd-svg{border:1.5px solid var(--edge)!important}
+html[data-theme] :is(.tabs,.tab-bar,#tabs){border:1.5px solid var(--edge)!important;border-radius:14px}
+html[data-theme] :is(input,select,textarea):not([type=range]){border:1.5px solid var(--edge)!important}
+html[data-theme] .nf input,html[data-theme] .setup-pane .nf input.cell-input{border:0!important}
+html[data-theme] .btn,html[data-theme] .btn-outline{border:1.5px solid var(--edge)!important}
+html[data-theme] .btn-accent,html[data-theme] #btn-watch{border-color:transparent!important}
+html[data-theme] .tab.active{border:1.5px solid var(--edge)!important}
+html[data-theme] :is(.cmp-table,table) :is(th,td){border-bottom:1px solid color-mix(in srgb,var(--edge) 70%,transparent)!important}
+html[data-theme] :is(.cmp-table,table) thead th{border-bottom:1.5px solid var(--edge)!important}
+html[data-theme] .results-card-header{border-bottom:1.5px solid var(--edge)!important}
+html[data-theme] .ln-track{border:1px solid color-mix(in srgb,var(--edge) 60%,transparent)}
+html[data-theme] .panel-title::after{background:var(--edge)!important;opacity:.6}
+/* spacing between blocks */
+.work-pane{display:flex;flex-direction:column;gap:20px}
+.work-pane>.section,.work-pane .section.active{margin:0}
+.panel,.results-card,.scenario-card,.summary-block,.algo-header,.metrics-row,.summary-grid{margin-bottom:0}
+.section.active{display:flex;flex-direction:column;gap:18px}
+.setup-pane{gap:16px}
+.panel{padding:22px}
+@media (max-width:560px){.panel{padding:18px}.work-pane{gap:16px}}
+html[data-theme] .setup-pane #process-table td{border:0!important}
+html[data-theme] :is(.tabs,.tab-bar,#tabs){align-self:stretch;width:100%;max-width:none;box-sizing:border-box}

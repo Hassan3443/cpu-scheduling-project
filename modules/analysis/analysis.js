@@ -77,8 +77,8 @@ export function renderSummary(rr, pr, quantum) {
     risks neglecting low-priority ones.</p>
     ${prStarv.length ? `<p style="color:var(--warn)">⚠ Starvation likely detected for ${prStarv.map(p=>`${p.pid} (WT=${p.wt})`).join(', ')} under Priority Scheduling.</p>` : ''}
     <p style="color:var(--muted);font-size:.82rem">
-      For interactive multi-user systems → <span style="color:#064B67">Round Robin</span>. &nbsp;
-      For real-time / mission-critical tasks → <span style="color:#8A1556">Priority Scheduling</span>.
+      For interactive multi-user systems → <span class="c-rr">Round Robin</span>. &nbsp;
+      For real-time / mission-critical tasks → <span class="c-pr">Priority Scheduling</span>.
     </p>
   `;
 }

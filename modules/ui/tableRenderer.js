@@ -1,11 +1,22 @@
-export const COLORS = [
-  '#0E9AD0','#1AA564','#D63D95','#F2A100','#7C5CE6',
-  '#0F9D9A','#E4572E','#6B8E23','#B5651D','#4361EE'
-];
+export const PALETTES = {
+  dark:  ['#38BDF8','#34D399','#A78BFA','#FBBF24','#FB7185','#2DD4BF','#60A5FA','#F0ABFC','#A3E635','#FDBA74'],
+  dusk:  ['#3CC3F2','#3DD68C','#F472B6','#FBBF24','#A78BFA','#2DD4BF','#FB923C','#A3E635','#F0ABFC','#60A5FA'],
+  light: ['#0E9AD0','#1AA564','#D63D95','#F2A100','#7C5CE6','#0F9D9A','#E4572E','#6B8E23','#B5651D','#4361EE']
+};
+export const THEMES = ['dark', 'dusk', 'light'];
+export function currentTheme() {
+  const t = typeof document !== 'undefined' ? document.documentElement.dataset.theme : '';
+  return THEMES.includes(t) ? t : 'dusk';
+}
+// COLORS is changed in place so every module that imported it sees the active palette.
+export const COLORS = PALETTES[currentTheme()].slice();
+export function applyPalette(theme) { COLORS.splice(0, COLORS.length, ...PALETTES[theme]); }
 
-// Dark readable text colour for a process colour (about 7:1 on its pale tint).
+// Readable text colour for a process colour: the colour itself on dark, lightened on dusk, darkened on light.
 export function inkOf(hex) {
-  const n = parseInt(hex.slice(1), 16), ink = [16, 35, 58], k = 0.66;
+  const th = currentTheme();
+  if (th === 'dark') return hex;
+  const n = parseInt(hex.slice(1), 16), ink = th === 'light' ? [16, 35, 58] : [248, 250, 252], k = th === 'light' ? 0.66 : 0.72;
   const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v, i) => Math.round(v * (1 - k) + ink[i] * k));
   return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
 }

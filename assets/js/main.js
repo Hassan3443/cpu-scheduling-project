@@ -2,7 +2,7 @@ import {
   getProcesses, setProcesses, handleAddProcess, removeProcess, clearAllProcesses, loadDemoData 
 } from '../../modules/input/inputManager.js';
 import { switchTab } from '../../modules/ui/inputUI.js';
-import { renderTable, renderResults, COLORS } from '../../modules/ui/tableRenderer.js';
+import { renderTable, renderResults, COLORS, applyPalette, THEMES } from '../../modules/ui/tableRenderer.js';
 import { renderGantt, renderMiniGantt, renderQueue, renderLanes } from '../../modules/ui/ganttChart.js';
 import { detectStarvation, renderSummary } from '../../modules/analysis/analysis.js';
 import { simulateRR } from '../../modules/algorithms/roundRobin.js';
@@ -303,4 +303,22 @@ initNumberFields();
   q.addEventListener('input', sync);
   document.addEventListener('click', e => { if (e.target.closest('#q-minus,#q-plus,.preset')) setTimeout(sync, 0); });
   sync();
+})();
+
+// Theme switch: Dark, Dusk, Light. Saved in localStorage; the head script sets it before first paint.
+(function () {
+  const root = document.documentElement;
+  const btns = [...document.querySelectorAll('[data-theme-set]')];
+  const mark = () => btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === root.dataset.theme)));
+  btns.forEach(b => b.addEventListener('click', () => {
+    const t = b.dataset.themeSet;
+    if (!THEMES.includes(t) || t === root.dataset.theme) return;
+    root.dataset.theme = t;
+    try { localStorage.setItem('cpu-theme', t); } catch (e) { /* private mode: keep for this visit */ }
+    applyPalette(t); mark();
+    const on = [...document.querySelectorAll('.preset')].findIndex(b => b.classList.contains('on'));
+    buildPresets(); if (on >= 0) document.querySelectorAll('.preset')[on].classList.add('on');
+    liveRun();
+  }));
+  mark();
 })();
