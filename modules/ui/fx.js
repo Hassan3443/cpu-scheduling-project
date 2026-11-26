@@ -1,42 +1,24 @@
 // Optional sound and visual effects for the CPU animation. Sounds are synthesized with WebAudio
 // (no audio files). Audio only starts after a user gesture, because the animation only moves
 // after a click on Play, Step or Watch. Visual effects are skipped under prefers-reduced-motion.
+import { SoundFX } from './soundfx.js';
 const KEY = 'cpu-sound', VOL = 'cpu-volume';
-let ac = null, master = null;
 const state = { on: localStorage.getItem(KEY) !== 'off', vol: Number(localStorage.getItem(VOL) || 30) };
 const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Sounds come from soundfx.js (Web Audio only, no files). The context is created lazily on a cue
+// or a toggle click, which are user gestures. Tuning knobs: see soundfx.js (per-cue peak/send,
+// master chain) and MASTER_CURVE below (slider 0..100 to master gain).
+const MASTER_CURVE = v => Math.pow(v / 100, 0.85);  // slider 30 -> 0.36, 100 -> 1.0
+function applyVol() { SoundFX.setEnabled(state.on); SoundFX.setVolume(MASTER_CURVE(state.vol)); }
 function ctxAudio() {
   if (!state.on) return null;
-  if (!ac) {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    ac = new AC(); master = ac.createGain(); master.connect(ac.destination);
-  }
-  master.gain.value = Math.pow(state.vol / 100, 2) * 0.6;
-  if (ac.state === 'suspended') ac.resume();
-  return ac;
-}
-function tone(freq, start, dur, type = 'sine', gain = 0.5, slideTo) {
-  const o = ac.createOscillator(), g = ac.createGain(), t0 = ac.currentTime + start;
-  o.type = type; o.frequency.setValueAtTime(freq, t0);
-  if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
-  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.02);
-}
-function whoosh() {
-  const len = Math.floor(ac.sampleRate * 0.22), buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-  const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(), t0 = ac.currentTime;
-  src.buffer = buf; f.type = 'bandpass'; f.Q.value = 2; f.frequency.setValueAtTime(400, t0); f.frequency.exponentialRampToValueAtTime(2400, t0 + 0.2);
-  g.gain.value = 0.5; src.connect(f); f.connect(g); g.connect(master); src.start(t0);
+  applyVol();            // set volume first so the very first cue is not louder than the slider says
+  return SoundFX.init();
 }
 const SOUND = {
-  arrive: () => tone(880, 0, 0.07, 'sine', 0.35),
-  dispatch: () => { whoosh(); tone(330, 0.08, 0.12, 'triangle', 0.3, 520); },
-  preempt: () => { tone(240, 0, 0.09, 'square', 0.22, 110); tone(160, 0.05, 0.1, 'square', 0.15, 90); },
-  done: () => { tone(660, 0, 0.14, 'sine', 0.4); tone(990, 0.1, 0.22, 'sine', 0.4); },
-  finish: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.11, 0.3, 'triangle', 0.4)),
+  arrive: () => SoundFX.arrive(), dispatch: () => SoundFX.dispatch(), preempt: () => SoundFX.preempt(),
+  done: () => SoundFX.done(), finish: () => SoundFX.finish(),
 };
 
 function burst(cls) { // particle burst at the Done lane / chip, in SVG space
@@ -82,7 +64,7 @@ document.addEventListener('cpu-fx', e => {
 document.addEventListener('card-fx', e => {
   if (!ctxAudio()) return;
   const c = e.detail.cue;
-  try { (c === 'tick' ? SOUND.arrive : SOUND[c])(); } catch (_) { /* audio is optional */ }
+  try { if (c === 'tick') SoundFX.barTick(e.detail.i || 0); else SOUND[c](); } catch (_) { /* audio is optional */ }
 });
 
 function sync() {
@@ -93,12 +75,12 @@ function sync() {
 }
 document.addEventListener('click', e => {
   if (e.target.closest('#sound-toggle')) {
-    state.on = !state.on; localStorage.setItem(KEY, state.on ? 'on' : 'off'); sync();
+    state.on = !state.on; localStorage.setItem(KEY, state.on ? 'on' : 'off'); sync(); applyVol();
     if (state.on && ctxAudio()) SOUND.arrive();
   }
 });
 document.addEventListener('input', e => {
-  if (e.target.id === 'sound-vol') { state.vol = Number(e.target.value); e.target.style.setProperty('--v', state.vol + '%'); localStorage.setItem(VOL, String(state.vol)); if (master) master.gain.value = Math.pow(state.vol / 100, 2) * 0.6; }
+  if (e.target.id === 'sound-vol') { state.vol = Number(e.target.value); e.target.style.setProperty('--v', state.vol + '%'); localStorage.setItem(VOL, String(state.vol)); applyVol(); }
 });
 document.addEventListener('change', e => { if (e.target.id === 'sound-vol' && ctxAudio()) SOUND.arrive(); });
 sync();

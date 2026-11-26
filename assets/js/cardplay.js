@@ -6,7 +6,7 @@
   const cards = [];
   let active = null;
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
-  const fx = cue => document.dispatchEvent(new CustomEvent('card-fx', { detail: { cue } }));
+  const fx = (cue, i) => document.dispatchEvent(new CustomEvent('card-fx', { detail: { cue, i } }));
 
   function parts(card) {
     const chart = card.sec.querySelector('.gantt-chart');
@@ -45,7 +45,7 @@
         const p = reduce() ? (f >= it.l ? 1 : 0) : clamp((f - it.l) / (it.w || 1));
         it.el.style.clipPath = `inset(0 ${((1 - p) * 100).toFixed(1)}% 0 0)`;
         it.el.style.opacity = p > 0 ? '1' : '0';
-        if (it.kind === 'bar' && p > 0 && !it.fired) { it.fired = true; fx('tick'); }
+        if (it.kind === 'bar' && p > 0 && !it.fired) { it.fired = true; fx('tick', card.n++); }
       } else {
         it.el.style.opacity = f >= it.l ? '1' : '0';
         if (it.kind === 'done' && f >= it.l && !it.fired) { it.fired = true; fx('done'); }
@@ -70,7 +70,7 @@
     if (topPlay && topPlay.getAttribute('aria-pressed') === 'true') topPlay.click();
     if (card.state === 'idle' || card.state === 'done') {
       card.parts = parts(card); if (!card.parts.items.length) return;
-      card.f = 0; card.parts.items.forEach(i => { i.fired = false; });
+      card.f = 0; card.n = 0; card.parts.items.forEach(i => { i.fired = false; });
       const span = Math.max(...card.parts.items.map(i => i.l + i.w), 0.0001); // already 0..1
       card.dur = reduce() ? 4000 : Math.min(14000, Math.max(5000, (card.sec.querySelector('.ln-body') ? +card.sec.querySelector('.ln-body').dataset.total : 20) * 450 * span));
     }
