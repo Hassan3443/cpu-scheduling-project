@@ -36,7 +36,8 @@ export function renderCpuDiagram(procs, quantum) {
   ctx = { procs, quantum, key: prev.key, speed: prev.speed, t: 0, timer: null, nodes: {} };
   host.innerHTML = `
     <div class="cd-controls">
-      <label class="cd-field">Algorithm <select id="cd-algo">${ALGORITHMS.map(a => `<option value="${a.key}"${a.key === ctx.key ? ' selected' : ''}>${a.name}</option>`).join('')}</select></label>
+      <div class="seg" role="group" aria-label="Algorithm shown in the animation">${ALGORITHMS.map(a => `<button type="button" class="seg-btn${a.key === ctx.key ? ' on' : ''}" data-algo="${a.key}" aria-pressed="${a.key === ctx.key}">${a.name}</button>`).join('')}</div>
+      <label class="cd-field cd-algo-field">Algorithm <select id="cd-algo">${ALGORITHMS.map(a => `<option value="${a.key}"${a.key === ctx.key ? ' selected' : ''}>${a.name}</option>`).join('')}</select></label>
       <label class="cd-field">Speed <select id="cd-speed">${SPEEDS.map((s, i) => `<option value="${i}"${i === ctx.speed ? ' selected' : ''}>${s[0]}</option>`).join('')}</select></label>
     </div>
     <div class="cd-controls">
@@ -80,6 +81,10 @@ export function renderCpuDiagram(procs, quantum) {
   ctx.colors = Object.fromEntries(procs.map((p, i) => [p.pid, COLORS[i % COLORS.length]]));
   const $ = id => host.querySelector(id);
   $('#cd-algo').addEventListener('change', e => { ctx.key = e.target.value; load(); });
+  host.querySelectorAll('.seg-btn').forEach(b => b.addEventListener('click', () => {
+    const sel = $('#cd-algo'); sel.value = b.dataset.algo; sel.dispatchEvent(new Event('change'));
+    host.querySelectorAll('.seg-btn').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+  }));
   $('#cd-speed').addEventListener('change', e => { ctx.speed = +e.target.value; if (ctx.timer) { stop(); toggle(); } });
   $('#cd-play').addEventListener('click', toggle);
   $('#cd-step').addEventListener('click', () => { stop(); if (ctx.t < ctx.total) setT(ctx.t + 1); });
@@ -163,6 +168,7 @@ function setT(t, snap = false) {
   document.getElementById('cd-idle').textContent = !cur && t < ctx.total ? 'CPU idle' : '';
   document.getElementById('cd-time').textContent = `t = ${t} of ${ctx.total}`;
   document.getElementById('cd-scrub').value = t;
+  document.dispatchEvent(new CustomEvent('cpu-t', { detail: { t, key: ctx.key } }));
   document.getElementById('cd-head').style.left = (ctx.total ? t / ctx.total * 100 : 0) + '%';
   document.querySelector('.cd-chip').classList.toggle('busy', !!cur);
   document.getElementById('cd-back').disabled = t <= 0;

@@ -131,11 +131,50 @@ export function renderLanes(containerId, procs, timeline, colorMap) {
   const grid = evs.map(t => `<i style="left:${pct(t)}"></i>`).join('');
   const rows = procs.map(p => {
     const L = laneSegments(p, timeline), col = colorMap[p.pid] || '#38BDF8';
-    const waits = L.waits.map(w => `<b class="ln-wait" style="left:${pct(w.start)};width:${((w.end - w.start) / total * 100).toFixed(3)}%" title="${p.pid} waits ${w.end - w.start}u (${w.start} to ${w.end})"></b>`).join('');
-    const runs = L.runs.map(r => `<b class="ln-run" data-pid="${p.pid}" style="left:${pct(r.start)};width:${((r.end - r.start) / total * 100).toFixed(3)}%" title="${p.pid} runs ${r.end - r.start}u (${r.start} to ${r.end})${r.slices > 1 ? `, ${r.slices} slices` : ''}"><span>${r.end - r.start}u</span></b>`).join('');
+    const tat = L.finish === null ? 0 : L.finish - p.at;
+    const ctxLine = `Arrival ${p.at}, burst ${p.bt}, priority ${p.pr}`;
+    const tot = `Total wait ${L.waitTotal}u, turnaround ${tat}u`;
+    const waits = L.waits.map(w => `<b class="ln-wait" tabindex="0" style="left:${pct(w.start)};width:${((w.end - w.start) / total * 100).toFixed(3)}%" data-tip="${p.pid} waiting in the ready queue|t = ${w.start} to ${w.end} (${w.end - w.start}u)|${ctxLine}|${tot}"></b>`).join('');
+    const runs = L.runs.map(r => `<b class="ln-run" tabindex="0" data-pid="${p.pid}" style="left:${pct(r.start)};width:${((r.end - r.start) / total * 100).toFixed(3)}%" data-tip="${p.pid} running on the CPU|t = ${r.start} to ${r.end} (${r.end - r.start}u${r.slices > 1 ? `, ${r.slices} slices` : ''})|${ctxLine}|${tot}"><span>${r.end - r.start}u</span></b>`).join('');
     const arrive = `<s class="ln-arr" style="left:${pct(p.at)}" title="${p.pid} arrives at ${p.at}"></s>`;
     const done = L.finish === null ? '' : `<u class="ln-done" style="left:${pct(L.finish)}" title="${p.pid} finishes at ${L.finish}">&#10003;</u>`;
     return `<div class="ln-row" style="--pc:${col}" data-pid="${p.pid}"><div class="ln-name">${p.pid}</div><div class="ln-track">${waits}${runs}${arrive}${done}</div><div class="ln-stat" title="Time spent waiting in the ready queue">wait <b>${L.waitTotal}</b></div></div>`;
   }).join('');
-  el.innerHTML = `<div class="ln-cap"><span class="k wait"></span>waiting <span class="k run"></span>running <span class="k arr"></span>arrives <span class="k done">&#10003;</span>finishes</div><div class="ln-body"><div class="ln-grid">${grid}</div>${rows}</div>`;
+  el.innerHTML = `<div class="ln-cap"><span class="k wait"></span>waiting <span class="k run"></span>running <span class="k arr"></span>arrives <span class="k done">&#10003;</span>finishes</div><div class="ln-body" data-total="${total}"><div class="ln-grid">${grid}</div><div class="ln-grid ln-hw"><em class="ln-head" hidden></em></div>${rows}</div>`;
+}
+
+// Rich hover / focus / tap popover for swimlane segments (text only, no HTML from data).
+let tipEl = null;
+function showTip(target) {
+  if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'ln-tip'; tipEl.setAttribute('role', 'tooltip'); document.body.appendChild(tipEl); }
+  const [title, ...rest] = target.dataset.tip.split('|');
+  tipEl.textContent = '';
+  const h = document.createElement('b'); h.textContent = title; tipEl.appendChild(h);
+  rest.forEach(l => { const d = document.createElement('span'); d.textContent = l; tipEl.appendChild(d); });
+  tipEl.hidden = false;
+  const r = target.getBoundingClientRect(), tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  let x = r.left + r.width / 2 - tw / 2;
+  x = Math.max(8, Math.min(x, window.innerWidth - tw - 8));
+  let y = r.top - th - 8; if (y < 8) y = r.bottom + 8;
+  tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
+}
+function hideTip() { if (tipEl) tipEl.hidden = true; }
+if (typeof document !== 'undefined') {
+  const hit = e => e.target.closest && e.target.closest('.ln-run,.ln-wait');
+  document.addEventListener('mouseover', e => { const t = hit(e); if (t) showTip(t); });
+  document.addEventListener('mouseout', e => { if (hit(e)) hideTip(); });
+  document.addEventListener('focusin', e => { const t = hit(e); if (t) showTip(t); });
+  document.addEventListener('focusout', hideTip);
+  document.addEventListener('click', e => { const t = hit(e); if (t) showTip(t); else hideTip(); });
+  // Shared playhead: the CPU player publishes t; the lanes of the selected algorithm draw a line at t.
+  document.addEventListener('cpu-t', e => {
+    const { t, key } = e.detail;
+    document.querySelectorAll('.ln-body').forEach(b => {
+      const head = b.querySelector('.ln-head'); if (!head) return;
+      const mine = b.closest('#lanes-rr') ? key === 'rr' : b.closest('#lanes-pr') ? key === 'pr' : false;
+      const tot = +b.dataset.total;
+      head.hidden = !mine || !tot;
+      if (mine && tot) head.style.left = (Math.min(t, tot) / tot * 100) + '%';
+    });
+  });
 }
