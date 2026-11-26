@@ -89,7 +89,7 @@ function sync() {
   const b = document.getElementById('sound-toggle'); if (!b) return;
   b.setAttribute('aria-pressed', String(state.on));
   b.querySelector('.st-label').textContent = state.on ? 'Sound on' : 'Sound off';
-  const r = document.getElementById('sound-vol'); if (r) { r.value = state.vol; r.disabled = !state.on; }
+  const r = document.getElementById('sound-vol'); if (r) { r.value = state.vol; r.disabled = !state.on; r.style.setProperty('--v', state.vol + '%'); }
 }
 document.addEventListener('click', e => {
   if (e.target.closest('#sound-toggle')) {
@@ -98,7 +98,7 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('input', e => {
-  if (e.target.id === 'sound-vol') { state.vol = Number(e.target.value); localStorage.setItem(VOL, String(state.vol)); if (master) master.gain.value = Math.pow(state.vol / 100, 2) * 0.6; }
+  if (e.target.id === 'sound-vol') { state.vol = Number(e.target.value); e.target.style.setProperty('--v', state.vol + '%'); localStorage.setItem(VOL, String(state.vol)); if (master) master.gain.value = Math.pow(state.vol / 100, 2) * 0.6; }
 });
 document.addEventListener('change', e => { if (e.target.id === 'sound-vol' && ctxAudio()) SOUND.arrive(); });
 sync();
