@@ -19,7 +19,7 @@ export function renderCompareAll(procs, quantum) {
 
   const table = `<div class="cmp-wrap">
     <table class="cmp-table">
-      <thead><tr><th>Algorithm</th>${METRICS.map(m => `<th>${m[1]}</th>`).join('')}<th>Context switches</th><th>CPU utilisation</th></tr></thead>
+      <thead><tr><th>Algorithm</th>${METRICS.map(m => `<th title="${m[1]}">${m[1].replace(/^Avg\w*\s/i, '').length ? `<span class="long">${m[1]}</span><span class="short">${shortName(m[1])}</span>` : m[1]}</th>`).join('')}<th title="Context switches: times the CPU changed to a different process. Fewer is cheaper."><span class="long">Context switches</span><span class="short">Switches</span></th><th title="CPU utilisation: share of the time the CPU was busy."><span class="long">CPU utilisation</span><span class="short">CPU busy</span></th></tr></thead>
       <tbody>${rows.map(r => `<tr>
         <td><strong>${r.name}</strong></td>
         ${METRICS.map(([k]) => `<td class="${winners[k] === r.key ? 'best' : ''}">${r[k].toFixed(2)}</td>`).join('')}
@@ -42,4 +42,9 @@ export function renderCompareAll(procs, quantum) {
   rows.forEach(r => renderMiniGantt(document.getElementById(`cmp-g-${r.key}`), r.result.timeline, colorMap));
   document.getElementById('compare-placeholder').style.display = 'none';
   document.getElementById('compare-content').style.display = 'block';
+}
+
+function shortName(label) {
+  const l = label.toLowerCase();
+  return l.includes('wait') ? 'Avg WT' : l.includes('turn') ? 'Avg TAT' : l.includes('resp') ? 'Avg RT' : label;
 }

@@ -668,3 +668,13 @@ tbody td:hover{background:rgba(56,189,248,.13)}
 #sec-gantt.pid-focus .legend-item:not(.hl){opacity:.5}
 .bg-fx i.cpu-glyph{animation-name:glyph-drift2;animation-timing-function:ease-in-out}
 @keyframes glyph-drift2{0%{transform:translate(0,0) rotate(var(--r,0deg))}100%{transform:translate(var(--dx,80px),var(--dy,-60px)) rotate(calc(var(--r,0deg) + 28deg))}}
+.cmp-table th .short{display:none}
+@media (max-width:560px){
+.cmp-table{min-width:0;table-layout:fixed;width:100%}
+.cmp-table th .long{display:none}.cmp-table th .short{display:inline}
+.cmp-table th,.cmp-table td{padding:8px 3px;font-size:.68rem}
+.cmp-table th:first-child,.cmp-table td:first-child{width:30%;padding-left:8px}
+.cmp-table th{letter-spacing:0;white-space:normal;line-height:1.2}
+.cmp-wrap{overflow-x:visible}
+#glance .cmp-table th:first-child{width:27%}
+}
