@@ -117,7 +117,7 @@
 
   <div id="gantt-content" style="display:none">
     <div class="panel cd-panel"><div class="panel-title">Watch the CPU work</div><div id="cd-diagram"></div></div>
-    <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-replay">↻ Replay animation</button><span class="live-note">Change the numbers on the Setup tab and everything here updates.</span></div>
+    <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-replay">↻ Replay animation</button><span class="live-note">Change the numbers in the left panel and everything here updates.</span></div>
     <div class="legend legend-shared" id="legend-rr" aria-label="Process colors"></div>
     <div class="gantt-section">
       <div class="gantt-label rr"><span class="dot rr"></span>Round Robin: ready queue at the end of the last slice</div>
@@ -193,7 +193,7 @@
     <div class="panel-title">How to use this simulator</div>
     <p class="howto-lead">It shows how a CPU decides which process runs next, and compares five scheduling methods on the same list of processes.</p>
     <ol class="howto-steps">
-      <li><b>Pick an example</b> on the Setup tab, or press "Add a process" to build your own list.</li>
+      <li><b>Pick an example</b> in the left panel, or press "Add a process" to build your own list.</li>
       <li><b>Edit the numbers.</b> <em>Arrives at</em> is when the process shows up, <em>Needs</em> is how long it must run, <em>Priority</em> 1 is the most urgent.</li>
       <li><b>Set the time slice (quantum)</b> for Round Robin. Each process runs at most this long before the next one gets a turn.</li>
       <li><b>Read "Result at a glance".</b> It compares all five algorithms. The green number is the best in its column. Lower is better for wait, turnaround and response.</li>
