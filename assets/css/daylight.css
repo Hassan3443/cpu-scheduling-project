@@ -168,3 +168,5 @@ table th{color:var(--ink-3)}
 *{font-family:var(--font-sans)!important}
 h1,h2,h3,h4,.pane-title,.panel-title,.kpi-v,.preset b,.pid-badge,.ln-name,.rq-pill,.gantt-label,.results-card-header,.algo-card .name,.metric-val,.quantum-label,.bar-pid,.summary-block h4,.conclusion h3,.scenario-name,.howto-lead{font-family:var(--font-display)!important}
 .panel-title{font-weight:800!important}
+.nf input,.setup-pane .nf input.cell-input{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}
+#q-range{accent-color:var(--accent);background:transparent!important;border:0!important}
