@@ -782,8 +782,6 @@ body{padding:20px 24px 40px}
 /* phase 3: Precision Instrument Dark (matte graphite, quiet chrome, process colors carry the energy) */
 :root{--bg:#0F1216;--surface:#161A20;--surface2:#1E232C;--surface3:#252B36;--border:#252B36;--border2:#3A4354;--text:#F2F4F8;--muted:#949EAD;--accent:#38BDF8}
 body{background:#0F1216}
-.bg-fx{opacity:.18}
-.bg-fx b,.bg-fx i,.bg-fx .scan{display:none}
 .hero{background:#161A20;border:1px solid #252B36;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);border-radius:12px}
 .hero h1{background:none;-webkit-text-fill-color:#F2F4F8;color:#F2F4F8}
 .hero .badge{border-color:#3A4354;color:#949EAD}
@@ -817,3 +815,50 @@ input,select{font-variant-numeric:tabular-nums}
 .ln-tip[hidden]{display:none}
 .ln-tip b{color:#F2F4F8;font-size:12.5px;margin-bottom:2px}
 @media (prefers-reduced-motion:reduce){.ln-head{transition:none}}
+
+/* animated background restored, a little more visible on graphite */
+.bg-fx b{opacity:.16}
+.bg-fx .o2{opacity:.12}.bg-fx .o3{opacity:.13}
+.bg-fx i.cpu-glyph{opacity:var(--o2,.16)}
+.bg-fx i:not(.cpu-glyph){opacity:.4}
+
+/* setup pane v2: number steppers, process cards, example cards */
+.nf{display:grid;grid-template-columns:30px minmax(0,1fr) 30px;align-items:stretch;height:46px;background:#090B0E;border:1px solid #252B36;border-radius:10px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.nf:focus-within{border-color:#38BDF8;box-shadow:0 0 0 3px rgba(56,189,248,.18)}
+.nf .nf-b{border:0;background:transparent;color:#949EAD;font:500 18px var(--font-mono);cursor:pointer;padding:0;user-select:none;touch-action:manipulation;transition:background .12s,color .12s}
+.nf .nf-b:hover{background:#1E232C;color:#F2F4F8}
+.nf .nf-b:active{background:#38BDF8;color:#090B0E}
+.setup-pane .nf input.cell-input,.nf input{border:0;background:transparent;text-align:center;color:#F2F4F8;font:600 19px var(--font-mono);font-variant-numeric:tabular-nums;min-height:0;height:100%;padding:0;width:100%;min-width:0;cursor:ew-resize;touch-action:pan-y;-moz-appearance:textfield;appearance:textfield;outline:0}
+.nf input::-webkit-outer-spin-button,.nf input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.nf input:focus{cursor:text}
+.nf input.invalid{color:#FB7185}
+body.nf-scrub,body.nf-scrub *{cursor:ew-resize!important;user-select:none!important}
+/* process rows become cards */
+.setup-pane #process-table,.setup-pane #process-table tbody{display:block;width:100%}
+.setup-pane #process-table thead{display:none}
+.setup-pane #process-table tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 8px;padding:12px;margin-bottom:10px;background:#12161B;border:1px solid #252B36;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.setup-pane #process-table td{display:block;padding:0!important;width:auto!important;border:0}
+.setup-pane #process-table td:nth-child(1){grid-column:1 / 3;grid-row:1}
+.setup-pane #process-table td:nth-child(5){grid-column:3;grid-row:1;justify-self:end}
+.setup-pane #process-table td[data-label]{grid-row:2}
+.setup-pane #process-table td[data-label]::before{content:attr(data-label);display:block;margin:0 0 5px 2px;font:600 11px var(--font-sans,inherit);color:#949EAD;letter-spacing:.02em}
+.setup-pane #process-table td.empty-state{grid-column:1 / -1}
+.setup-pane .pid-badge{font:700 14px var(--font-mono);padding:4px 10px;border-radius:8px}
+.setup-pane .btn-del{width:32px;height:32px;border-radius:8px}
+/* quantum */
+.setup-pane .quantum-row{padding:14px;background:#12161B;border:1px solid #252B36;border-radius:12px;display:grid;gap:10px}
+.setup-pane .quantum-row .stepper{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:stretch}
+.setup-pane .quantum-row .stepper input{width:100%;height:46px;font:700 22px var(--font-mono);font-variant-numeric:tabular-nums;text-align:center;border-radius:10px;background:#090B0E;border:1px solid #252B36;color:#F2F4F8;-moz-appearance:textfield;appearance:textfield}
+.setup-pane .quantum-row .stepper input::-webkit-outer-spin-button,.setup-pane .quantum-row .stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.setup-pane .quantum-row .stepper .btn{width:44px;height:46px;border-radius:10px;font-size:20px;touch-action:manipulation}
+.setup-pane .quantum-row .stepper .btn:active{background:#38BDF8;color:#090B0E}
+#q-range{width:100%;accent-color:#38BDF8;height:28px}
+/* example cards */
+.setup-pane .preset{flex-direction:column;align-items:stretch;gap:4px;padding:12px 14px;border-radius:12px;background:#12161B;text-align:left}
+.setup-pane .preset b{font-size:14.5px;white-space:normal}
+.setup-pane .preset span{display:block;font-size:12px;line-height:1.4;color:#949EAD}
+.pbars{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+.pbars i{display:block;height:4px;border-radius:3px;opacity:.9}
+.setup-pane .preset.on{border-color:#38BDF8;box-shadow:0 0 0 1px #38BDF8 inset}
+@media (max-width:1000px){.setup-pane .preset span{display:block}.setup-pane .presets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.setup-pane .presets{grid-template-columns:1fr}}

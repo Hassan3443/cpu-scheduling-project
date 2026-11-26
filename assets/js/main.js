@@ -8,6 +8,7 @@ import { detectStarvation, renderSummary } from '../../modules/analysis/analysis
 import { simulateRR } from '../../modules/algorithms/roundRobin.js';
 import { simulatePriority } from '../../modules/algorithms/priority.js';
 import { renderCompareAll } from '../../modules/ui/compareView.js';
+import { initNumberFields } from '../../modules/ui/numberField.js';
 import { PRESETS } from '../../modules/input/presets.js';
 import { renderCpuDiagram } from '../../modules/ui/cpuDiagram.js';
 import { encodeSetup, decodeSetup } from '../../modules/ui/share.js';
@@ -65,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function buildPresets() {
   document.getElementById('presets').innerHTML = PRESETS.map((p, i) =>
-    `<button class="preset" data-preset="${i}"><b>${p.name}</b><span>${p.note}</span></button>`).join('');
+    { const mx = Math.max(...p.procs.map(x => x.bt)); const bars = p.procs.map((x, k) => `<i style="width:${Math.max(6, x.bt / mx * 100).toFixed(0)}%;background:${COLORS[k % COLORS.length]}"></i>`).join('');
+      return `<button class="preset" data-preset="${i}"><b>${p.name}</b><span>${p.note}</span><em class="pbars" aria-hidden="true" title="Burst lengths">${bars}</em></button>`; }).join('');
 }
 
 function applyPreset(i) {
@@ -290,4 +292,15 @@ function loadAndRunScenario(idx) {
     t.setAttribute('aria-expanded', String(!c));
     t.lastElementChild.textContent = c ? '▾' : '▴';
   });
+})();
+
+initNumberFields();
+(function () {
+  const q = document.getElementById('quantum'), r = document.getElementById('q-range');
+  if (!q || !r) return;
+  const sync = () => { const v = parseInt(q.value, 10); if (v >= 1) r.value = Math.min(12, v); };
+  r.addEventListener('input', () => { q.value = r.value; q.dispatchEvent(new Event('input', { bubbles: true })); });
+  q.addEventListener('input', sync);
+  document.addEventListener('click', e => { if (e.target.closest('#q-minus,#q-plus,.preset')) setTimeout(sync, 0); });
+  sync();
 })();

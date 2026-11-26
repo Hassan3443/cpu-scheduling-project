@@ -9,7 +9,8 @@ export function renderTable(processes) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No processes yet. Pick an example above or press Add a process.</td></tr>';
     return;
   }
-  const cell = (p, f, min, max) => `<td><input class="cell-input" type="number" step="1" min="${min}"${max ? ` max="${max}"` : ''} value="${p[f]}" data-pid="${p.pid}" data-field="${f}" aria-label="${p.pid} ${f}"/></td>`;
+  const LAB = { at: 'Arrives', bt: 'Burst', pr: 'Priority' };
+  const cell = (p, f, min, max) => `<td data-label="${LAB[f]}"><div class="nf"><button type="button" class="nf-b" data-nf="-1" tabindex="-1" aria-label="Decrease ${p.pid} ${f}">&minus;</button><input class="cell-input" type="number" step="1" min="${min}"${max ? ` max="${max}"` : ''} value="${p[f]}" data-pid="${p.pid}" data-field="${f}" aria-label="${p.pid} ${f}"/><button type="button" class="nf-b" data-nf="1" tabindex="-1" aria-label="Increase ${p.pid} ${f}">+</button></div></td>`;
   tbody.innerHTML = processes.map(p => `
     <tr>
       <td><span class="pid-badge">${p.pid}</span></td>
