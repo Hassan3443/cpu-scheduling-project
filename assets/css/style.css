@@ -778,3 +778,25 @@ body{padding:20px 24px 40px}
  .setup-pane{max-height:none;position:static}
 }
 @media (prefers-reduced-motion:reduce){.kpi.flash{animation:none}}
+
+/* phase 3: Precision Instrument Dark (matte graphite, quiet chrome, process colors carry the energy) */
+:root{--bg:#0F1216;--surface:#161A20;--surface2:#1E232C;--surface3:#252B36;--border:#252B36;--border2:#3A4354;--text:#F2F4F8;--muted:#949EAD;--accent:#38BDF8}
+body{background:#0F1216}
+.bg-fx{opacity:.18}
+.bg-fx b,.bg-fx i,.bg-fx .scan{display:none}
+.hero{background:#161A20;border:1px solid #252B36;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);border-radius:12px}
+.hero h1{background:none;-webkit-text-fill-color:#F2F4F8;color:#F2F4F8}
+.hero .badge{border-color:#3A4354;color:#949EAD}
+#btn-watch{background:#F2F4F8!important;color:#090B0E!important;border:0;font-weight:700;border-radius:8px;box-shadow:inset 0 1px 0 #fff,0 6px 18px -8px rgba(242,244,248,.45)}
+#btn-watch:hover{background:#fff!important}
+.setup-pane{background:#12161B;border:1px solid #252B36;border-radius:12px}
+.setup-pane .panel,.panel{background:#161A20;border:1px solid #252B36;border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.setup-pane .preset.on{border-color:#38BDF8;background:#1E232C}
+.kpi{background:#161A20;border:1px solid #252B36;border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);border-top:2px solid #38BDF8}
+.kpi:nth-child(2){border-top-color:#10B981}.kpi:nth-child(3){border-top-color:#F59E0B}.kpi:nth-child(4){border-top-color:#A855F7}
+.kpi-v{color:#F2F4F8;font-variant-numeric:tabular-nums}
+.tab.active{background:transparent;border-color:transparent;border-radius:6px 6px 0 0;box-shadow:inset 0 -2px 0 #38BDF8;color:#F2F4F8}
+.tab:hover:not(.active){background:#1E232C}
+.btn,.cell-input{border-radius:6px}
+input,select{font-variant-numeric:tabular-nums}
+.ln-bar,.gantt-bar{border-radius:4px}
