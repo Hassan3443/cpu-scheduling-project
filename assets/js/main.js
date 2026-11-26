@@ -282,3 +282,12 @@ function loadAndRunScenario(idx) {
   renderGlance(procs, quantum);
   renderCpuDiagram(procs.map(p => ({ ...p })), quantum);
 }
+(function () {
+  const pane = document.getElementById('sec-input'), t = document.getElementById('pane-toggle');
+  if (!pane || !t) return;
+  t.addEventListener('click', () => {
+    const c = pane.classList.toggle('collapsed');
+    t.setAttribute('aria-expanded', String(!c));
+    t.lastElementChild.textContent = c ? '▾' : '▴';
+  });
+})();
