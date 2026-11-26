@@ -91,3 +91,13 @@ test('diagram slots: tokens never overlap in Incoming/Done and the queue squeeze
   assert.ok(q[9].x >= 170 && q[0].x <= 490);
   assert.deepEqual(slot('running', 0, 0, 0), { x: 655, y: 130, k: 1 });
 });
+
+import { countSwitches, plainVerdict } from '../modules/analysis/analysis.js';
+test('countSwitches ignores idle gaps and repeats; plainVerdict is computed from the metrics', () => {
+  assert.equal(countSwitches([{ pid: 'P1' }, { pid: 'P1' }, { pid: 'IDLE' }, { pid: 'P1' }, { pid: 'P2' }, { pid: 'P1' }]), 2);
+  const P = [{ pid: 'P1', at: 0, bt: 8, pr: 3 }, { pid: 'P2', at: 1, bt: 4, pr: 1 }];
+  const rr = simulateRR(P, 2), pr = simulatePriority(P);
+  const v = plainVerdict(rr, pr);
+  const maxRr = Math.max(...rr.metrics.map(m => m.wt)), maxPr = Math.max(...pr.metrics.map(m => m.wt));
+  assert.ok(v.includes(String(maxRr)) && v.includes(String(maxPr)));
+});

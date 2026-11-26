@@ -11,6 +11,7 @@ import { renderCompareAll } from '../../modules/ui/compareView.js';
 import { PRESETS } from '../../modules/input/presets.js';
 import { renderCpuDiagram } from '../../modules/ui/cpuDiagram.js';
 import { encodeSetup, decodeSetup } from '../../modules/ui/share.js';
+import { initHelp } from '../../modules/ui/help.js';
 import { buildBackground } from '../../modules/ui/background.js';
 import { renderGlance } from '../../modules/ui/glance.js';
 import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../modules/testing/testScenarios.js';
@@ -18,6 +19,17 @@ import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../m
 // Setup Initialization
 document.addEventListener('DOMContentLoaded', () => {
   buildBackground();
+  initHelp();
+  document.addEventListener('click', e => {
+    const g = e.target.closest('[data-goto]');
+    if (g) { switchTab(g.dataset.goto); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (e.target.closest('[data-load-example]')) { applyPreset(0); }
+  });
+  try {
+    const w = document.getElementById('welcome');
+    if (w && localStorage.getItem('cpu-lab-welcome') !== 'seen') w.hidden = false;
+    document.getElementById('welcome-close').addEventListener('click', () => { w.hidden = true; try { localStorage.setItem('cpu-lab-welcome', 'seen'); } catch (e) {} });
+  } catch (e) { /* storage blocked: the note simply stays hidden */ }
   buildScenariosTab();
   buildPresets();
   attachEventListeners();
@@ -128,7 +140,7 @@ function attachEventListeners() {
     try { const link = location.origin + location.pathname + location.search + '#' + encodeSetup(getProcesses(), +document.getElementById('quantum').value);
       await navigator.clipboard.writeText(link); cp.textContent = '✓ Link copied'; }
     catch (e) { cp.textContent = 'Copy the address bar'; }
-    setTimeout(() => { cp.textContent = '🔗 Copy link to this setup'; }, 2000);
+    setTimeout(() => { cp.textContent = 'Copy link to this setup'; }, 2000);
   });
   document.getElementById('btn-replay').addEventListener('click', replayGantt);
 }

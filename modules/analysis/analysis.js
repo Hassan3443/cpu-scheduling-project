@@ -4,6 +4,29 @@ export function detectStarvation(metrics, threshold = STARVATION_THRESHOLD) {
   return metrics.filter(p => p.wt > threshold).map(p => ({ pid: p.pid, wt: p.wt }));
 }
 
+// Times the CPU moved from one process to a different one (idle gaps do not count).
+export function countSwitches(timeline) {
+  let n = 0, last = null;
+  for (const seg of timeline) {
+    if (seg.pid === 'IDLE') continue;
+    if (last !== null && seg.pid !== last) n++;
+    last = seg.pid;
+  }
+  return n;
+}
+
+// One computed sentence about who waits least and who waits longest.
+export function plainVerdict(rr, pr) {
+  const maxWt = r => Math.max(...r.metrics.map(m => m.wt));
+  const fmt = v => (Number.isInteger(v) ? String(v) : v.toFixed(2));
+  const faster = rr.avgTat < pr.avgTat ? 'Round Robin' : pr.avgTat < rr.avgTat ? 'Priority' : null;
+  const a = faster ? `${faster} finishes the average process sooner (average turnaround ${fmt(faster === 'Round Robin' ? rr.avgTat : pr.avgTat)} vs ${fmt(faster === 'Round Robin' ? pr.avgTat : rr.avgTat)}).` : `Both give the same average turnaround (${fmt(rr.avgTat)}).`;
+  const wr = maxWt(rr), wp = maxWt(pr);
+  const b = wr === wp ? `The longest any process waits is ${wr} under both.`
+    : `The longest any process waits is ${wr} under Round Robin and ${wp} under Priority, so ${wr < wp ? 'Round Robin' : 'Priority'} treats the unluckiest process better.`;
+  return `${a} ${b}`;
+}
+
 export function renderSummary(rr, pr, quantum) {
   const rrWins = [], prWins = [], ties = [];
   const cmp = (label, rrV, prV) => {
@@ -15,12 +38,13 @@ export function renderSummary(rr, pr, quantum) {
   cmp('Avg TAT', rr.avgTat, pr.avgTat);
   cmp('Avg RT',  rr.avgRt,  pr.avgRt);
   rrWins.push(`Fairer CPU distribution (Q=${quantum})`);
-  rrWins.push('No starvation — every process gets CPU time');
-  prWins.push('Urgent processes served first by priority');
-  prWins.push('Lower context-switch overhead');
-
   const rrStarv = detectStarvation(rr.metrics);
   const prStarv = detectStarvation(pr.metrics);
+  if (!rrStarv.length) rrWins.push(`No process waited longer than ${STARVATION_THRESHOLD} units`);
+  prWins.push('Urgent processes are served first by design');
+  const rrSw = countSwitches(rr.timeline), prSw = countSwitches(pr.timeline);
+  if (prSw < rrSw) prWins.push(`Fewer context switches (${prSw} vs ${rrSw})`);
+  else if (rrSw < prSw) rrWins.push(`Fewer context switches (${rrSw} vs ${prSw})`);
   if (prStarv.length) prWins.push(`⚠ Starvation risk: ${prStarv.map(p=>p.pid).join(', ')} (WT > ${STARVATION_THRESHOLD})`);
   if (rrStarv.length) rrWins.push(`⚠ Starvation detected: ${rrStarv.map(p=>p.pid).join(', ')}`);
 
@@ -42,6 +66,7 @@ export function renderSummary(rr, pr, quantum) {
 
   document.getElementById('conclusion-area').innerHTML = `
     <h3>Final Conclusion</h3>
+    <p class="plain-verdict"><strong>In plain words:</strong> ${plainVerdict(rr, pr)}</p>
     <p>On the tested workload, <strong>${overall}</strong> achieved better combined average metrics
     (WT + TAT), making it more efficient for this dataset.</p>
     <p><strong>${other}</strong> ${other === 'Priority Scheduling'

@@ -45,7 +45,7 @@ export function renderCpuDiagram(procs, quantum) {
       <button class="btn btn-outline" id="cd-step" aria-label="Step forward one time unit">Step ▶</button>
       <button class="btn btn-outline" id="cd-reset" aria-label="Back to the start">⟲ Reset</button>
       <input type="range" id="cd-scrub" min="0" value="0" step="1" aria-label="Time"/>
-      <span class="cd-time" id="cd-time">t = 0</span>
+      <span class="cd-time" id="cd-time" role="status" aria-live="polite">t = 0</span>
     </div>
     <svg id="cd-svg" viewBox="0 0 900 266" role="img" aria-labelledby="cd-title">
       <title id="cd-title">Processes move from the ready queue to the CPU, then to done</title>

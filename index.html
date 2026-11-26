@@ -28,7 +28,7 @@
   <svg class="logo" viewBox="0 0 64 64" width="44" height="44" role="img" aria-label="CPU Scheduling Simulator"><defs><linearGradient id="ic-pkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E2430"/><stop offset="1" stop-color="#12151B"/></linearGradient></defs><g fill="#364052"><rect x="20" y="4" width="4" height="8" rx="1"/><rect x="30" y="4" width="4" height="8" rx="1"/><rect x="40" y="4" width="4" height="8" rx="1"/><rect x="20" y="52" width="4" height="8" rx="1"/><rect x="30" y="52" width="4" height="8" rx="1"/><rect x="40" y="52" width="4" height="8" rx="1"/><rect x="4" y="20" width="8" height="4" rx="1"/><rect x="4" y="30" width="8" height="4" rx="1" fill="#38BDF8"/><rect x="4" y="40" width="8" height="4" rx="1"/><rect x="52" y="20" width="8" height="4" rx="1"/><rect x="52" y="30" width="8" height="4" rx="1" fill="#10B981"/><rect x="52" y="40" width="8" height="4" rx="1"/></g><polygon points="17,12 47,12 52,17 52,47 47,52 17,52 12,47 12,17" fill="url(#ic-pkg)" stroke="#364052" stroke-width="2" stroke-linejoin="round"/><circle cx="17.5" cy="17.5" r="1.75" fill="#F59E0B"/><rect x="20" y="20" width="24" height="24" rx="2.5" fill="#0B0D10" stroke="#242B37" stroke-width="1.5"/><rect x="23" y="24" width="8" height="4" rx="1.25" fill="#F59E0B"/><rect x="26" y="30" width="13" height="4" rx="1.25" fill="#10B981"/><rect x="33" y="36" width="8" height="4" rx="1.25" fill="#38BDF8"/></svg>
   <div class="badge">Interactive CPU Scheduling Lab</div>
   <h1>Round Robin vs Priority Scheduling</h1>
-  <p>CPU Scheduling Comparison Simulator</p>
+  <p>Round Robin and Priority in detail, plus FCFS, SJF and SRTF for comparison. Change the numbers and watch the CPU decide.</p>
 </div>
 
 <div class="tabs">
@@ -36,12 +36,16 @@
   <button class="tab" data-tab="gantt"><span class="tab-idx">02</span><span class="tab-label">Timeline</span></button>
   <button class="tab" data-tab="results"><span class="tab-idx">03</span><span class="tab-label">Numbers</span></button>
   <button class="tab" data-tab="summary"><span class="tab-idx">04</span><span class="tab-label">Verdict</span></button>
-  <button class="tab" data-tab="scenarios"><span class="tab-idx">05</span><span class="tab-label">Test cases</span></button>
-  <button class="tab" data-tab="compare"><span class="tab-idx">06</span><span class="tab-label">All 5 algorithms</span></button>
+    <button class="tab" data-tab="compare"><span class="tab-idx">05</span><span class="tab-label">All 5 algorithms</span></button>
+  <button class="tab" data-tab="scenarios"><span class="tab-idx">06</span><span class="tab-label">Verification</span></button>
   <span class="tab-divider" aria-hidden="true"></span><button class="tab tab-util" data-tab="howto"><span class="tab-label">How to use</span><span class="tab-help-mark" aria-hidden="true">?</span></button>
 </div>
 
 <div class="section active" id="sec-input">
+  <div class="welcome" id="welcome" hidden>
+    <div><strong>New here?</strong> A CPU can only run one process at a time. This page shows how different scheduling rules pick who goes next. Choose an example below, change a number, and the charts update. Start with the Timeline tab to see it move.</div>
+    <button class="btn btn-outline" id="welcome-close">Got it</button>
+  </div>
   <ol class="steps" aria-label="How to use">
     <li><b>01</b><span><strong>Pick an example</strong>Load a preset workload below</span></li>
     <li><b>02</b><span><strong>Change any number</strong>Edit arrival, burst or priority</span></li>
@@ -54,16 +58,16 @@
   </div>
 
   <div class="panel">
-    <div class="panel-title">2. Processes <span class="live-note">Edit any number. Lower priority number = more urgent.</span></div>
+    <div class="panel-title">2. Processes <span class="live-note">Edit any number. A lower priority number means more urgent.</span></div>
     <div id="global-err" class="validation-alert"></div>
     <div class="process-table-wrap">
       <table id="process-table">
         <thead>
           <tr>
-            <th title="Name of the process">Process</th>
-            <th title="Arrival time: when the process enters the ready queue">Arrives at</th>
-            <th title="Burst time: how long the CPU must work on it in total">Needs (burst)</th>
-            <th title="Priority: 1 is the most urgent. Only Priority scheduling uses it">Priority</th>
+            <th title="Process: the name of one job the CPU has to run.">Process</th>
+            <th title="Arrival time: when the process shows up and joins the waiting line. It cannot start earlier.">Arrives at</th>
+            <th title="Burst time: the total CPU time the process needs to finish.">Needs (burst)</th>
+            <th title="Priority: how urgent it is. 1 is the most urgent. Only Priority scheduling uses it.">Priority</th>
             <th></th>
           </tr>
         </thead>
@@ -86,14 +90,15 @@
   </div>
 
   <div class="panel">
-    <div class="panel-title">3. Result at a glance <span class="live-note">Best value in each column is green. Hover a column title for its meaning.</span></div>
-    <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-copy-link">🔗 Copy link to this setup</button></div>
+    <div class="panel-title">3. Result at a glance <span class="live-note">Best value in each column is green. Tap or hover a column title for its meaning.</span></div>
+    <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-copy-link">Copy link to this setup</button></div>
     <div id="glance"><p class="live-note">Add a process to see results.</p></div>
     <div class="btn-row"><button class="btn btn-run" id="btn-run" disabled>See the Gantt charts →</button></div>
   </div>
 </div>
 
 <div class="section" id="sec-gantt">
+  <p class="tab-intro">This tab shows who got the CPU and when. Press Play to watch it step by step, then read the two charts below. Each colored block is one process using the CPU.</p>
   <div class="algo-header">
     <div class="algo-card rr">
       <div class="label">Algorithm 1</div>
@@ -106,8 +111,8 @@
   </div>
 
   <div id="gantt-placeholder" class="placeholder">
-    <div class="icon">⬛</div>
-    <p>Run the simulation first to see Gantt charts.</p>
+    <svg class="ph-icon" viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="12" width="24" height="24" rx="4"/><path d="M18 6v6M30 6v6M18 36v6M30 36v6M6 18h6M6 30h6M36 18h6M36 30h6"/></svg>
+    <p>There are no processes yet, so there is nothing to show.</p><button class="btn btn-accent" data-load-example>Load the classic example</button>
   </div>
 
   <div id="gantt-content" style="display:none">
@@ -128,12 +133,14 @@
       <div class="gantt-times" id="times-pr"></div>
     </div>
   </div>
+  <div class="next-row"><button class="btn btn-outline" data-goto="results">Next: the numbers →</button></div>
 </div>
 
 <div class="section" id="sec-results">
+  <p class="tab-intro">Per-process numbers for the two main algorithms. Wait, turnaround and response are all "lower is better". Tap or hover any column title for its meaning.</p>
   <div id="results-placeholder" class="placeholder">
-    <div class="icon">📊</div>
-    <p>Run the simulation first to see results.</p>
+    <svg class="ph-icon" viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="12" width="24" height="24" rx="4"/><path d="M18 6v6M30 6v6M18 36v6M30 36v6M6 18h6M6 30h6M36 18h6M36 30h6"/></svg>
+    <p>There are no processes yet, so there is nothing to show.</p><button class="btn btn-accent" data-load-example>Load the classic example</button>
   </div>
   <div id="results-content" style="display:none">
     <details class="glossary"><summary>What do WT, TAT and RT mean?</summary><dl><dt>WT, waiting time</dt><dd>Time a process spent ready but not running. Lower is better.</dd><dt>TAT, turnaround time</dt><dd>From arrival until the process finishes (waiting plus running).</dd><dt>RT, response time</dt><dd>From arrival until the process gets the CPU for the first time.</dd><dt>Context switch</dt><dd>The CPU changes from one process to a different one.</dd><dt>CPU utilisation</dt><dd>Share of the time span in which the CPU was busy, not idle.</dd></dl></details>
@@ -141,20 +148,24 @@
     <div class="metrics-row" id="metrics-row"></div>
     <div class="results-grid" id="results-grid"></div>
   </div>
+  <div class="next-row"><button class="btn btn-outline" data-goto="summary">Next: the verdict →</button></div>
 </div>
 
 <div class="section" id="sec-summary">
+  <p class="tab-intro">A short, plain-language comparison of Round Robin and Priority on the setup you chose. Every number here is computed from your processes.</p>
   <div id="summary-placeholder" class="placeholder">
-    <div class="icon">📝</div>
-    <p>Run the simulation first to see the analysis.</p>
+    <svg class="ph-icon" viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="12" width="24" height="24" rx="4"/><path d="M18 6v6M30 6v6M18 36v6M30 36v6M6 18h6M6 30h6M36 18h6M36 30h6"/></svg>
+    <p>There are no processes yet, so there is nothing to show.</p><button class="btn btn-accent" data-load-example>Load the classic example</button>
   </div>
   <div id="summary-content" style="display:none">
     <div class="summary-grid" id="summary-grid"></div>
     <div class="conclusion" id="conclusion-area"></div>
   </div>
+  <div class="next-row"><button class="btn btn-outline" data-goto="compare">Next: all 5 algorithms →</button></div>
 </div>
 
 <div class="section" id="sec-scenarios">
+  <p class="tab-intro">These checks run the simulator on known workloads and compare the output with hand-worked answers. Open one to see its inputs and result.</p>
   <div class="panel">
     <div class="panel-title">Pre-Built Test Scenarios</div>
     <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.25rem">
@@ -166,11 +177,13 @@
 </div>
 
 <div class="section" id="sec-compare">
+  <p class="tab-intro">The same processes run through all five algorithms, side by side. The green number is the best in its column.</p>
   <div id="compare-placeholder" class="placeholder">
-    <div class="icon">⚖</div>
-    <p>Run the simulation first to compare FCFS, SJF, SRTF, Round Robin and Priority on the same workload.</p>
+    <svg class="ph-icon" viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="12" width="24" height="24" rx="4"/><path d="M18 6v6M30 6v6M18 36v6M30 36v6M6 18h6M6 30h6M36 18h6M36 30h6"/></svg>
+    <p>There are no processes yet, so there is nothing to show.</p><button class="btn btn-accent" data-load-example>Load the classic example</button>
   </div>
   <div id="compare-content" style="display:none"></div>
+  <div class="next-row"><button class="btn btn-outline" data-goto="scenarios">Next: verification →</button></div>
 </div>
 
 <div class="section" id="sec-howto">
@@ -185,7 +198,7 @@
       <li><b>Open the Timeline tab</b> to see who ran when. Gray blocks marked IDLE mean the CPU had nothing to run. Press Replay to watch it again.</li>
       <li><b>Open Numbers, Verdict and All 5 algorithms</b> for per-process details and a short written comparison.</li>
     </ol>
-    <p class="howto-note">Everything updates as you type. Nothing is saved or sent anywhere. Time units are abstract (not seconds).</p>
+    <p class="howto-note">Everything updates as you type. Nothing is sent anywhere; the page only remembers that you closed the welcome note. Time units are abstract (not seconds).</p>
   </div>
 </div>
 
