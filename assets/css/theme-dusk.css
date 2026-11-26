@@ -170,7 +170,7 @@ html[data-theme="dusk"] .glance-more summary,html[data-theme="dusk"] a,html[data
 html[data-theme="dusk"] .preset.on b{color:#fff}
 html[data-theme="dusk"] .pid-badge{background:var(--surface2)!important;color:var(--ink)!important}
 html[data-theme="dusk"] .setup-pane #process-table td[data-label]::before{color:var(--ink-2)!important}
-html[data-theme="dusk"]{--chip-a:#4A5A75;--chip-b:#3A4860;--chip-stroke:#8FA3C0;--die-fill:#273044;--die-stroke:#8FA3C0;--ring:#A5B0FF}
+html[data-theme="dusk"]{--chip-a:#7487AD;--chip-b:#586C92;--chip-stroke:#C3D0E6;--die-fill:#1C2433;--die-stroke:#A9BAD6;--ring:#A5B0FF}
 html[data-theme="dusk"] .c-rr{color:#7FD6F5}
 html[data-theme="dusk"] .c-pr{color:#F9A8D4}
 html[data-theme="dusk"] .theme-switch{background:#212A3B;border-color:#4A5A75}
