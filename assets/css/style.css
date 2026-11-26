@@ -646,3 +646,25 @@ tbody td:hover{background:rgba(56,189,248,.13)}
 #helppop{position:fixed;z-index:200;padding:10px 12px;font:400 13px/1.5 var(--font-ui,inherit);color:var(--text);background:var(--surface3,#1c2330);border:1px solid rgba(56,189,248,.35);border-radius:10px;box-shadow:0 14px 34px -12px #000;pointer-events:none;text-transform:none;letter-spacing:0}
 #helppop[hidden]{display:none}
 .plain-verdict{padding:12px 14px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.25);border-radius:10px}
+/* Pass 5: Gantt sections and gentler visible drift */
+.gantt-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px 14px}
+.gantt-section+.gantt-section{margin-top:16px!important}
+.gantt-label{font-size:12px;margin-bottom:10px}
+.gantt-chart{height:68px;border-radius:12px;padding:0}
+.gantt-bar{border-radius:8px;background-clip:padding-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -14px 18px -14px rgba(0,0,0,.45);transition:opacity .2s ease,filter .2s ease,transform .2s ease}
+.gantt-bar .bar-pid{font-size:.9rem}
+.gantt-bar .bar-dur{font-size:.7rem;opacity:.9}
+.gantt-times{height:26px;margin-top:2px}
+.gantt-times span{padding-top:7px}
+.gantt-times span::before{content:"";position:absolute;left:50%;top:0;width:1px;height:5px;background:rgba(148,163,184,.55)}
+.gantt-times span:first-child::before{left:0}
+.gantt-times span:last-child::before{left:100%}
+.gantt-times span.ref::before{height:3px;background:rgba(148,163,184,.3)}
+.legend-item{padding:3px 8px;border-radius:7px;cursor:default;transition:background .2s ease}
+.legend-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){.legend-item:hover{background:rgba(255,255,255,.06)}}
+#sec-gantt.pid-focus .gantt-bar:not(.hl):not(.idle){opacity:.35}
+#sec-gantt.pid-focus .gantt-bar.hl{filter:brightness(1.25);z-index:2}
+#sec-gantt.pid-focus .legend-item:not(.hl){opacity:.5}
+.bg-fx i.cpu-glyph{animation-name:glyph-drift2;animation-timing-function:ease-in-out}
+@keyframes glyph-drift2{0%{transform:translate(0,0) rotate(var(--r,0deg))}100%{transform:translate(var(--dx,80px),var(--dy,-60px)) rotate(calc(var(--r,0deg) + 28deg))}}

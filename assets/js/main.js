@@ -20,6 +20,13 @@ import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../m
 document.addEventListener('DOMContentLoaded', () => {
   buildBackground();
   initHelp();
+  // Hover or focus a process (legend chip or bar) to light it up in both charts.
+  const lit = pid => document.querySelectorAll('#sec-gantt [data-pid]').forEach(el => el.classList.toggle('hl', !!pid && el.dataset.pid === pid));
+  const secG = document.getElementById('sec-gantt');
+  secG.addEventListener('pointerover', e => { const t = e.target.closest('[data-pid]'); secG.classList.toggle('pid-focus', !!t); lit(t ? t.dataset.pid : null); });
+  secG.addEventListener('pointerleave', () => { secG.classList.remove('pid-focus'); lit(null); });
+  secG.addEventListener('focusin', e => { const t = e.target.closest('.legend-item'); if (t) { secG.classList.add('pid-focus'); lit(t.dataset.pid); } });
+  secG.addEventListener('focusout', () => { secG.classList.remove('pid-focus'); lit(null); });
   document.addEventListener('click', e => {
     const g = e.target.closest('[data-goto]');
     if (g) { switchTab(g.dataset.goto); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }

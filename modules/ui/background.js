@@ -19,7 +19,7 @@ export function buildBackground(root = document.querySelector('.bg-fx')) {
   SPOTS.slice(0, small ? 6 : SPOTS.length).forEach(([x, y], i) => {
     const el = document.createElement('i');
     el.className = 'cpu-glyph';
-    el.style.cssText = `--x:${x}%;--y:${y}%;--d:${70 + (i * 13) % 50}s;--dl:${-(i * 9) % 60}s;--r:${(i * 37) % 40 - 20}deg;--o:${(0.09 + (i % 4) * 0.02).toFixed(3)}`;
+    el.style.cssText = `--x:${x}%;--y:${y}%;--d:${34 + (i * 13) % 30}s;--dl:${-(i * 9) % 34}s;--r:${(i * 37) % 40 - 20}deg;--dx:${(i % 2 ? -1 : 1) * (70 + (i * 17) % 60)}px;--dy:${(i % 3 ? -1 : 1) * (50 + (i * 23) % 60)}px;--o:${(0.09 + (i % 4) * 0.02).toFixed(3)}`;
     el.innerHTML = glyphSvg(26 + (i * 11) % 30, i);
     root.appendChild(el);
   });

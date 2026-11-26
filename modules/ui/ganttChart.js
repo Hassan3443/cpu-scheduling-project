@@ -21,7 +21,7 @@ export function referenceTicks(total, eventTimes) {
 
 export function legendHtml(colorMap) {
   return Object.entries(colorMap).map(([pid, col]) =>
-    `<div class="legend-item"><div class="legend-color" style="background:${col}33;border:2px solid ${col}"></div><span style="color:${col}">${pid}</span></div>`
+    `<div class="legend-item" data-pid="${pid}" tabindex="0"><div class="legend-color" style="background:${col}33;border:2px solid ${col}"></div><span style="color:${col}">${pid}</span></div>`
   ).join('');
 }
 
@@ -46,6 +46,7 @@ export function renderGantt(containerId, timesId, legendId, timeline, colorMap) 
     const left = (seg.start  / totalTime * 100).toFixed(2);
     bar.style.left  = left + '%';
     bar.style.width = pct  + '%';
+    if (seg.pid !== 'IDLE') bar.dataset.pid = seg.pid;
     const col = colorMap[seg.pid] || '#555';
     if (seg.pid !== 'IDLE') {
       bar.style.background  = col + '33';
