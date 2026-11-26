@@ -108,3 +108,34 @@ export function renderQueue(el, snapshot, colorMap) {
     snapshot.map((pid, i) => `<span class="rq-pill${i === 0 ? ' next' : ''}" style="--pc:${colorMap[pid] || '#38BDF8'}">${pid}</span>`)
       .join('<span class="q-arrow" aria-hidden="true">&rarr;</span>') + '</span>';
 }
+
+// Per-process view of one schedule: when it ran, when it sat waiting, when it arrived and finished.
+// Waiting = arrived, not finished, not running. Its total equals finish - arrival - burst.
+export function laneSegments(proc, timeline) {
+  const runs = mergeSlices(timeline).filter(s => s.pid === proc.pid).map(s => ({ start: s.start, end: s.end, slices: s.slices }));
+  if (!runs.length) return { runs, waits: [], finish: null, waitTotal: 0 };
+  const finish = runs[runs.length - 1].end;
+  const waits = [];
+  let cursor = proc.at;
+  for (const r of runs) { if (r.start > cursor) waits.push({ start: cursor, end: r.start }); cursor = r.end; }
+  return { runs, waits, finish, waitTotal: waits.reduce((s, w) => s + (w.end - w.start), 0) };
+}
+
+export function renderLanes(containerId, procs, timeline, colorMap) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!timeline.length) { el.innerHTML = ''; return; }
+  const total = timeline[timeline.length - 1].end;
+  const pct = t => (t / total * 100).toFixed(3) + '%';
+  const evs = [...new Set(timeline.flatMap(s => [s.start, s.end]))].sort((a, b) => a - b);
+  const grid = evs.map(t => `<i style="left:${pct(t)}"></i>`).join('');
+  const rows = procs.map(p => {
+    const L = laneSegments(p, timeline), col = colorMap[p.pid] || '#38BDF8';
+    const waits = L.waits.map(w => `<b class="ln-wait" style="left:${pct(w.start)};width:${((w.end - w.start) / total * 100).toFixed(3)}%" title="${p.pid} waits ${w.end - w.start}u (${w.start} to ${w.end})"></b>`).join('');
+    const runs = L.runs.map(r => `<b class="ln-run" data-pid="${p.pid}" style="left:${pct(r.start)};width:${((r.end - r.start) / total * 100).toFixed(3)}%" title="${p.pid} runs ${r.end - r.start}u (${r.start} to ${r.end})${r.slices > 1 ? `, ${r.slices} slices` : ''}"><span>${r.end - r.start}u</span></b>`).join('');
+    const arrive = `<s class="ln-arr" style="left:${pct(p.at)}" title="${p.pid} arrives at ${p.at}"></s>`;
+    const done = L.finish === null ? '' : `<u class="ln-done" style="left:${pct(L.finish)}" title="${p.pid} finishes at ${L.finish}">&#10003;</u>`;
+    return `<div class="ln-row" style="--pc:${col}" data-pid="${p.pid}"><div class="ln-name">${p.pid}</div><div class="ln-track">${waits}${runs}${arrive}${done}</div><div class="ln-stat" title="Time spent waiting in the ready queue">wait <b>${L.waitTotal}</b></div></div>`;
+  }).join('');
+  el.innerHTML = `<div class="ln-cap"><span class="k wait"></span>waiting <span class="k run"></span>running <span class="k arr"></span>arrives <span class="k done">&#10003;</span>finishes</div><div class="ln-body"><div class="ln-grid">${grid}</div>${rows}</div>`;
+}

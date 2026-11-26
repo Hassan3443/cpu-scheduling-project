@@ -3,7 +3,7 @@ import {
 } from '../../modules/input/inputManager.js';
 import { switchTab } from '../../modules/ui/inputUI.js';
 import { renderTable, renderResults, COLORS } from '../../modules/ui/tableRenderer.js';
-import { renderGantt, renderMiniGantt, renderQueue } from '../../modules/ui/ganttChart.js';
+import { renderGantt, renderMiniGantt, renderQueue, renderLanes } from '../../modules/ui/ganttChart.js';
 import { detectStarvation, renderSummary } from '../../modules/analysis/analysis.js';
 import { simulateRR } from '../../modules/algorithms/roundRobin.js';
 import { simulatePriority } from '../../modules/algorithms/priority.js';
@@ -20,6 +20,13 @@ import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../m
 document.addEventListener('DOMContentLoaded', () => {
   buildBackground();
   initHelp();
+  document.getElementById('btn-watch').addEventListener('click', () => {
+    switchTab('gantt');
+    const host = document.getElementById('cd-diagram');
+    host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const play = document.getElementById('cd-play');
+    if (play && play.getAttribute('aria-pressed') !== 'true') play.click();
+  });
   // Hover or focus a process (legend chip or bar) to light it up in both charts.
   const lit = pid => document.querySelectorAll('#sec-gantt [data-pid]').forEach(el => el.classList.toggle('hl', !!pid && el.dataset.pid === pid));
   const secG = document.getElementById('sec-gantt');
@@ -208,6 +215,8 @@ function runSimulation(opts = {}) {
   document.getElementById('gantt-content').style.display = 'block';
   renderGantt('gantt-rr', 'times-rr', 'legend-rr', rrResult.timeline, colorMap);
   renderGantt('gantt-pr', 'times-pr', null, prResult.timeline, colorMap);
+  renderLanes('lanes-rr', procs, rrResult.timeline, colorMap);
+  renderLanes('lanes-pr', procs, prResult.timeline, colorMap);
 
   renderQueue(document.getElementById('rr-queue'), rrResult.queueSnapshot, colorMap);
 
@@ -262,6 +271,8 @@ function loadAndRunScenario(idx) {
 
   renderGantt('gantt-rr','times-rr','legend-rr', rrRes.timeline, colorMap);
   renderGantt('gantt-pr','times-pr',null, prRes.timeline, colorMap);
+  renderLanes('lanes-rr', procs, rrRes.timeline, colorMap);
+  renderLanes('lanes-pr', procs, prRes.timeline, colorMap);
 
   renderQueue(document.getElementById('rr-queue'), rrRes.queueSnapshot, colorMap);
 

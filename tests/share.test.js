@@ -101,3 +101,15 @@ test('countSwitches ignores idle gaps and repeats; plainVerdict is computed from
   const maxRr = Math.max(...rr.metrics.map(m => m.wt)), maxPr = Math.max(...pr.metrics.map(m => m.wt));
   assert.ok(v.includes(String(maxRr)) && v.includes(String(maxPr)));
 });
+
+import { laneSegments } from '../modules/ui/ganttChart.js';
+test('laneSegments: waiting time per process equals the simulator WT for RR and Priority', () => {
+  const P = [{ pid: 'P1', at: 0, bt: 20, pr: 3 }, { pid: 'P2', at: 1, bt: 2, pr: 2 }, { pid: 'P3', at: 2, bt: 3, pr: 2 }, { pid: 'P4', at: 3, bt: 2, pr: 1 }, { pid: 'P5', at: 40, bt: 2, pr: 1 }];
+  for (const res of [simulateRR(P, 3), simulatePriority(P)]) {
+    for (const p of P) {
+      const L = laneSegments(p, res.timeline);
+      assert.equal(L.waitTotal, res.metrics.find(m => m.pid === p.pid).wt, p.pid);
+      assert.equal(L.runs.reduce((s, r) => s + r.end - r.start, 0), p.bt);
+    }
+  }
+});

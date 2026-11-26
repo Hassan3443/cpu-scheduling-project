@@ -16,9 +16,10 @@ export function clearErr(id) {
 }
 
 export function switchTab(name) {
+  if (name === 'input') { document.getElementById('sec-input').scrollIntoView({ behavior: 'smooth' }); return; }
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
-  const tabs = ['input','gantt','results','summary','compare','scenarios','howto'];
+  const tabs = ['gantt','results','summary','compare','scenarios','howto'];
   document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
 }

@@ -24,40 +24,29 @@
 <body>
 <div class="bg-fx" aria-hidden="true"><b class="o1"></b><b class="o2"></b><b class="o3"></b><span class="grid"></span><span class="scan"></span><i style="--x:8%;--y:20%;--d:34s;--dl:-3s;--c:#8f9bd6"></i><i style="--x:22%;--y:70%;--d:42s;--dl:-12s;--c:#79bfa5"></i><i style="--x:40%;--y:35%;--d:38s;--dl:-20s;--c:#d9899b"></i><i style="--x:58%;--y:80%;--d:46s;--dl:-8s;--c:#d6b073"></i><i style="--x:72%;--y:25%;--d:36s;--dl:-25s;--c:#7fb3cf"></i><i style="--x:88%;--y:60%;--d:44s;--dl:-15s;--c:#8f9bd6"></i><i style="--x:95%;--y:15%;--d:40s;--dl:-5s;--c:#79bfa5"></i><i style="--x:15%;--y:92%;--d:48s;--dl:-30s;--c:#d9899b"></i></div>
 
-<div class="header">
-  <svg class="logo" viewBox="0 0 64 64" width="44" height="44" role="img" aria-label="CPU Scheduling Simulator"><defs><linearGradient id="ic-pkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E2430"/><stop offset="1" stop-color="#12151B"/></linearGradient></defs><g fill="#364052"><rect x="20" y="4" width="4" height="8" rx="1"/><rect x="30" y="4" width="4" height="8" rx="1"/><rect x="40" y="4" width="4" height="8" rx="1"/><rect x="20" y="52" width="4" height="8" rx="1"/><rect x="30" y="52" width="4" height="8" rx="1"/><rect x="40" y="52" width="4" height="8" rx="1"/><rect x="4" y="20" width="8" height="4" rx="1"/><rect x="4" y="30" width="8" height="4" rx="1" fill="#38BDF8"/><rect x="4" y="40" width="8" height="4" rx="1"/><rect x="52" y="20" width="8" height="4" rx="1"/><rect x="52" y="30" width="8" height="4" rx="1" fill="#10B981"/><rect x="52" y="40" width="8" height="4" rx="1"/></g><polygon points="17,12 47,12 52,17 52,47 47,52 17,52 12,47 12,17" fill="url(#ic-pkg)" stroke="#364052" stroke-width="2" stroke-linejoin="round"/><circle cx="17.5" cy="17.5" r="1.75" fill="#F59E0B"/><rect x="20" y="20" width="24" height="24" rx="2.5" fill="#0B0D10" stroke="#242B37" stroke-width="1.5"/><rect x="23" y="24" width="8" height="4" rx="1.25" fill="#F59E0B"/><rect x="26" y="30" width="13" height="4" rx="1.25" fill="#10B981"/><rect x="33" y="36" width="8" height="4" rx="1.25" fill="#38BDF8"/></svg>
-  <div class="badge">Interactive CPU Scheduling Lab</div>
-  <h1>Round Robin vs Priority Scheduling</h1>
-  <p>Round Robin and Priority in detail, plus FCFS, SJF and SRTF for comparison. Change the numbers and watch the CPU decide.</p>
-</div>
-
-<div class="tabs">
-  <button class="tab active" data-tab="input"><span class="tab-idx">01</span><span class="tab-label">Setup</span></button>
-  <button class="tab" data-tab="gantt"><span class="tab-idx">02</span><span class="tab-label">Timeline</span></button>
-  <button class="tab" data-tab="results"><span class="tab-idx">03</span><span class="tab-label">Numbers</span></button>
-  <button class="tab" data-tab="summary"><span class="tab-idx">04</span><span class="tab-label">Verdict</span></button>
-    <button class="tab" data-tab="compare"><span class="tab-idx">05</span><span class="tab-label">All 5 algorithms</span></button>
-  <button class="tab" data-tab="scenarios"><span class="tab-idx">06</span><span class="tab-label">Verification</span></button>
-  <span class="tab-divider" aria-hidden="true"></span><button class="tab tab-util" data-tab="howto"><span class="tab-label">How to use</span><span class="tab-help-mark" aria-hidden="true">?</span></button>
-</div>
-
-<div class="section active" id="sec-input">
-  <div class="welcome" id="welcome" hidden>
-    <div><strong>New here?</strong> A CPU can only run one process at a time. This page shows how different scheduling rules pick who goes next. Choose an example below, change a number, and the charts update. Start with the Timeline tab to see it move.</div>
-    <button class="btn btn-outline" id="welcome-close">Got it</button>
+<header class="hero">
+  <div class="hero-main">
+    <svg class="logo" viewBox="0 0 64 64" width="44" height="44" role="img" aria-label="CPU Scheduling Simulator"><defs><linearGradient id="ic-pkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E2430"/><stop offset="1" stop-color="#12151B"/></linearGradient></defs><g fill="#364052"><rect x="20" y="4" width="4" height="8" rx="1"/><rect x="30" y="4" width="4" height="8" rx="1"/><rect x="40" y="4" width="4" height="8" rx="1"/><rect x="20" y="52" width="4" height="8" rx="1"/><rect x="30" y="52" width="4" height="8" rx="1"/><rect x="40" y="52" width="4" height="8" rx="1"/><rect x="4" y="20" width="8" height="4" rx="1"/><rect x="4" y="30" width="8" height="4" rx="1" fill="#38BDF8"/><rect x="4" y="40" width="8" height="4" rx="1"/><rect x="52" y="20" width="8" height="4" rx="1"/><rect x="52" y="30" width="8" height="4" rx="1" fill="#10B981"/><rect x="52" y="40" width="8" height="4" rx="1"/></g><polygon points="17,12 47,12 52,17 52,47 47,52 17,52 12,47 12,17" fill="url(#ic-pkg)" stroke="#364052" stroke-width="2" stroke-linejoin="round"/><circle cx="17.5" cy="17.5" r="1.75" fill="#F59E0B"/><rect x="20" y="20" width="24" height="24" rx="2.5" fill="#0B0D10" stroke="#242B37" stroke-width="1.5"/><rect x="23" y="24" width="8" height="4" rx="1.25" fill="#F59E0B"/><rect x="26" y="30" width="13" height="4" rx="1.25" fill="#10B981"/><rect x="33" y="36" width="8" height="4" rx="1.25" fill="#38BDF8"/></svg>
+    <div>
+      <div class="badge">Interactive CPU Scheduling Lab</div>
+      <h1>Round Robin vs Priority Scheduling</h1>
+      <p>Round Robin and Priority in detail, plus FCFS, SJF and SRTF for comparison. Pick an example on the left, change any number, and the results update on the right.</p>
+    </div>
   </div>
-  <ol class="steps" aria-label="How to use">
-    <li><b>01</b><span><strong>Pick an example</strong>Load a preset workload below</span></li>
-    <li><b>02</b><span><strong>Change any number</strong>Edit arrival, burst or priority</span></li>
-    <li><b>03</b><span><strong>Read the result</strong>Everything updates as you type</span></li>
-  </ol>
+  <div class="hero-cta">
+    <button class="btn btn-accent btn-big" id="btn-watch">&#9654; Watch the CPU run</button>
+    <span class="hero-hint">Opens the Timeline and starts playing</span>
+  </div>
+</header>
 
-  <div class="panel">
+<div class="app">
+  <aside class="setup-pane" id="sec-input" aria-label="Setup">
+    <div class="pane-title"><span>Your processes</span><small>Edit here, results update live</small></div>
+    <div class="panel">
     <div class="panel-title">1. Pick an example</div>
     <div class="presets" id="presets"></div>
   </div>
-
-  <div class="panel">
+    <div class="panel">
     <div class="panel-title">2. Processes <span class="live-note">Edit any number. A lower priority number means more urgent.</span></div>
     <div id="global-err" class="validation-alert"></div>
     <div class="process-table-wrap">
@@ -88,16 +77,27 @@
       <div id="quantum-err" class="error-msg"></div>
     </div>
   </div>
-
-  <div class="panel">
-    <div class="panel-title">3. Result at a glance <span class="live-note">Best value in each column is green. Tap or hover a column title for its meaning.</span></div>
-    <div class="btn-row" style="margin-bottom:1rem"><button class="btn btn-outline" id="btn-copy-link">Copy link to this setup</button></div>
-    <div id="glance"><p class="live-note">Add a process to see results.</p></div>
-    <div class="btn-row"><button class="btn btn-run" id="btn-run" disabled>See the Gantt charts →</button></div>
+  </aside>
+  <main class="work-pane" id="main">
+  <div class="welcome" id="welcome" hidden>
+    <div><strong>New here?</strong> A CPU can only run one process at a time. This page shows how different scheduling rules pick who goes next. Choose an example on the left, change a number, and everything on the right updates. Press "Watch the CPU run" to see it move.</div>
+    <button class="btn btn-outline" id="welcome-close">Got it</button>
   </div>
+    <div class="panel">
+    <div class="panel-title">Result at a glance <button class="btn btn-outline btn-sm" id="btn-copy-link">Copy link to this setup</button></div>
+        <div id="glance"><p class="live-note">Add a process to see results.</p></div>
+    <button class="btn btn-run" id="btn-run" disabled hidden>Run</button>
+  </div>
+    <div class="tabs">
+  <button class="tab active" data-tab="gantt"><span class="tab-idx">01</span><span class="tab-label">Timeline</span></button>
+  <button class="tab" data-tab="results"><span class="tab-idx">02</span><span class="tab-label">Numbers</span></button>
+  <button class="tab" data-tab="summary"><span class="tab-idx">03</span><span class="tab-label">Verdict</span></button>
+    <button class="tab" data-tab="compare"><span class="tab-idx">04</span><span class="tab-label">All 5 algorithms</span></button>
+  <button class="tab" data-tab="scenarios"><span class="tab-idx">05</span><span class="tab-label">Verification</span></button>
+  <span class="tab-divider" aria-hidden="true"></span><button class="tab tab-util" data-tab="howto"><span class="tab-label">How to use</span><span class="tab-help-mark" aria-hidden="true">?</span></button>
 </div>
 
-<div class="section" id="sec-gantt">
+<div class="section active" id="sec-gantt">
   <p class="tab-intro">This tab shows who got the CPU and when. Press Play to watch it step by step, then read the two charts below. Each colored block is one process using the CPU.</p>
   <div class="algo-header">
     <div class="algo-card rr">
@@ -125,12 +125,14 @@
       <div class="gantt-label rr" style="margin-top:12px"><span class="dot rr"></span>Round Robin Gantt Chart</div>
       <div class="gantt-chart" id="gantt-rr"></div>
       <div class="gantt-times" id="times-rr"></div>
+      <div class="lanes" id="lanes-rr"></div>
     </div>
 
     <div class="gantt-section" style="margin-top:2rem">
       <div class="gantt-label pr"><span class="dot pr"></span>Priority Scheduling Gantt Chart</div>
       <div class="gantt-chart" id="gantt-pr"></div>
       <div class="gantt-times" id="times-pr"></div>
+      <div class="lanes" id="lanes-pr"></div>
     </div>
   </div>
   <div class="next-row"><button class="btn btn-outline" data-goto="results">Next: the numbers →</button></div>
@@ -200,6 +202,9 @@
     </ol>
     <p class="howto-note">Everything updates as you type. Nothing is sent anywhere; the page only remembers that you closed the welcome note. Time units are abstract (not seconds).</p>
   </div>
+</div>
+
+  </main>
 </div>
 
 <script type="module" src="./assets/js/main.js"></script>
