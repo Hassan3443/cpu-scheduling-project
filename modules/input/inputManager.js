@@ -1,4 +1,5 @@
 import { showErr, clearErr } from '../ui/inputUI.js';
+import { LIMITS } from '../algorithms/common.js';
 
 export let processes = [];
 
@@ -45,15 +46,16 @@ export function handleAddProcess() {
 
   if (!pid) { showErr('err-pid','Process ID cannot be empty.'); valid = false; }
   else if (processes.some(p => p.pid.toLowerCase() === pid.toLowerCase())) { showErr('err-pid','Duplicate Process ID.'); valid = false; }
-  else if (!/^[A-Za-z0-9_-]+$/.test(pid)) { showErr('err-pid','Use only letters, numbers, _, -'); valid = false; }
+  else if (!/^[A-Za-z0-9_-]+$/.test(pid) || pid.length > LIMITS.maxPidLen) { showErr('err-pid','Use 1 to 12 letters, numbers, _ or -'); valid = false; }
+  else if (pid.toLowerCase() === 'idle') { showErr('err-pid','IDLE is reserved.'); valid = false; }
 
   if (at === '') { showErr('err-at','Required.'); valid = false; }
   else if (isNaN(at) || !Number.isInteger(+at)) { showErr('err-at','Must be an integer.'); valid = false; }
-  else if (+at < 0) { showErr('err-at','Cannot be negative.'); valid = false; }
+  else if (+at < 0 || +at > LIMITS.maxTime) { showErr('err-at',`Must be 0 to ${LIMITS.maxTime}.`); valid = false; }
 
   if (bt === '') { showErr('err-bt','Required.'); valid = false; }
   else if (isNaN(bt) || !Number.isInteger(+bt)) { showErr('err-bt','Must be an integer.'); valid = false; }
-  else if (+bt <= 0) { showErr('err-bt','Must be > 0.'); valid = false; }
+  else if (+bt <= 0 || +bt > LIMITS.maxTime) { showErr('err-bt',`Must be 1 to ${LIMITS.maxTime}.`); valid = false; }
 
   if (pr === '') { showErr('err-pr','Required.'); valid = false; }
   else if (isNaN(pr) || !Number.isInteger(+pr)) { showErr('err-pr','Must be an integer.'); valid = false; }

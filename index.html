@@ -78,7 +78,7 @@
       <label class="quantum-label" for="quantum" title="Round Robin gives each process at most this many time units before moving to the next one">Round Robin time slice (quantum)</label>
       <div class="stepper">
         <button class="btn btn-outline nf-b" id="q-minus" aria-label="Decrease quantum">−</button>
-        <input type="number" id="quantum" value="4" min="1" step="1" inputmode="numeric"/>
+        <input type="number" id="quantum" value="4" min="1" max="99" step="1" inputmode="numeric"/>
         <button class="btn btn-outline nf-b" id="q-plus" aria-label="Increase quantum">+</button>
       </div>
       <input type="range" id="q-range" min="1" max="12" step="1" value="4" aria-label="Time slice slider"/>

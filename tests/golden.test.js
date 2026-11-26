@@ -51,7 +51,7 @@ test('golden: equal priorities behave like FCFS', () => {
 });
 test('golden: RR with a quantum larger than every burst equals FCFS', () => {
   const procs = [{ pid: 'P1', at: 0, bt: 4, pr: 1 }, { pid: 'P2', at: 1, bt: 2, pr: 1 }, { pid: 'P3', at: 9, bt: 3, pr: 1 }];
-  assert.deepEqual(segs(simulateRR(procs, 100)), segs(simulateFCFS(procs)));
+  assert.deepEqual(segs(simulateRR(procs, 99)), segs(simulateFCFS(procs)));
 });
 test('golden: all arrive together, ties broken by input order', () => {
   const procs = [{ pid: 'X', at: 0, bt: 2, pr: 1 }, { pid: 'Y', at: 0, bt: 2, pr: 1 }, { pid: 'Z', at: 0, bt: 2, pr: 1 }];

@@ -1,10 +1,10 @@
-import { prepare, pushSlice, finish } from './common.js';
+import { prepare, pushSlice, finish, LIMITS } from './common.js';
 
 // Round Robin. A process that arrives while another one is running joins the
 // queue before the preempted process goes back to its end (the usual textbook
 // convention). `queueSnapshot` is the ready queue the first time it is non-empty.
 export function simulateRR(procs, quantum) {
-  if (!Number.isInteger(quantum) || quantum < 1) throw new RangeError('quantum must be an integer >= 1');
+  if (!Number.isSafeInteger(quantum) || quantum < 1 || quantum > LIMITS.maxQuantum) throw new RangeError(`quantum must be a whole number from 1 to ${LIMITS.maxQuantum}`);
   const ps = prepare(procs);
   const sorted = [...ps].sort((a, b) => a.at - b.at || a.idx - b.idx);
   const n = sorted.length;

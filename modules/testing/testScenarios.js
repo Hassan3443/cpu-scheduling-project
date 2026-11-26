@@ -1,9 +1,10 @@
+import { overallWinner } from '../analysis/analysis.js';
 export const SCENARIOS = [
   {
     name:    'Scenario 1 – Basic Workload',
     quantum: 4,
-    desc:    'A normal mixed workload with 4 processes of varying burst and priority. Tests fundamental behaviour of both algorithms.',
-    expected:'RR rotates fairly; Priority runs P2→P4→P1→P3. Priority likely shows better avg WT for high-priority processes. RR shows better avg WT for low-priority ones.',
+    desc: 'A normal mixed workload with 4 processes of varying burst and priority. Tests fundamental behaviour of both algorithms.',
+    expected: 'Priority is preemptive, so P1 runs first (0-1), then P2 (1-5), P4 (5-10), the rest of P1 (10-17) and P3 (17-26). Round Robin rotates P1, P2, P3, P4 in slices of 4. Priority has the lower average wait (6.50 vs 11.75) and waits less or the same for every process (P1 9 vs 12, P2 0 vs 3, P3 15 vs 15, P4 2 vs 17).',
     procs: [
       { pid:'P1', at:0, bt:8, pr:3 },
       { pid:'P2', at:1, bt:4, pr:1 },
@@ -14,8 +15,8 @@ export const SCENARIOS = [
   {
     name:    'Scenario 2 – Urgency Case',
     quantum: 3,
-    desc:    'Contains P_urgent (priority 1). In Priority Scheduling it runs as soon as P1\'s burst ends. In Round Robin it must wait its turn.',
-    expected:'P_urgent has highest priority. Priority executes it immediately after P1 finishes. RR makes P_urgent wait for a full rotation, showing the urgency advantage of Priority Scheduling.',
+    desc: 'Contains P_urgent (priority 1), which arrives at t=12. Under Priority it takes the CPU the moment it arrives, even though P1 still has 4 units left. In Round Robin it queues behind P2 and P1 and waits its turn.',
+    expected: 'Priority: P1 0-4, P3 4-8, P1 8-12, P_urgent 12-14 (waits 0), P1 14-18, P2 18-24. Round Robin: P_urgent waits 6 units and runs 18-20. Priority has the lower average wait (5.50 vs 9.50), but P2 waits longer under Priority (16 vs 7).',
     procs: [
       { pid:'P1',      at:0,  bt:12, pr:3 },
       { pid:'P2',      at:2,  bt:6,  pr:3 },
@@ -26,8 +27,8 @@ export const SCENARIOS = [
   {
     name:    'Scenario 3 – Fairness Case',
     quantum: 5,
-    desc:    'RR gives every process a slice in each rotation. Priority forces P4 (lowest priority) to wait until P1, P2, P3 all finish.',
-    expected:'RR distributes service fairly. Priority may cause P4 (priority 4) to wait a long time. Starvation may be detected for P4 under Priority Scheduling.',
+    desc: 'All four processes arrive at t=0. Round Robin gives each a slice per rotation. Priority runs them one after another in priority order, so the lowest priority waits for all the others.',
+    expected: 'The two algorithms tie exactly on average wait (25.00) and average turnaround (37.50). Priority is much less even: P1 waits 0 and P4 waits 45. Under Priority, P3 and P4 wait more than 20 units. Under Round Robin, P1, P2 and P3 also exceed 20, because this workload is long (50 units in total).',
     procs: [
       { pid:'P1', at:0,  bt:20, pr:1 },
       { pid:'P2', at:0,  bt:15, pr:2 },
@@ -36,10 +37,10 @@ export const SCENARIOS = [
     ]
   },
   {
-    name:    'Scenario 4 – Starvation Case',
+    name:    'Scenario 4 – Low-Priority Starvation Case',
     quantum: 4,
-    desc:    'P_low (priority 10) is bypassed by every high-priority arrival. In Priority it waits through all 4 hi-priority jobs. In RR it gets its first slice after one rotation.',
-    expected:'P_low will be starved under Priority Scheduling. RR guarantees P_low runs within the first rotation despite low priority. Starvation detection should fire for P_low in Priority.',
+    desc: 'P_low (priority 10) arrives first and runs for one unit, then every high-priority arrival goes ahead of it. Under Priority it resumes only after all four high-priority jobs finish.',
+    expected: 'Priority: P_low runs 0-1, then waits until t=30 and finishes at 34 (wait 29, over the 20-unit line). Round Robin: P_low gets its slices at 0-4 and 20-21 (wait 16), but P_hi3 and P_hi4 wait 22 and 24. Priority has the lower averages (average wait 13.80 vs 19.40).',
     procs: [
       { pid:'P_low',  at:0, bt:5, pr:10 },
       { pid:'P_hi1',  at:1, bt:8, pr:1  },
@@ -67,10 +68,10 @@ export const SCENARIOS = [
     ]
   },
   {
-    name:    'Scenario 6 – Tie-Breaking & CPU Idle Gap',
+    name:    'Scenario 6 – Tie-Breaking & Late First Arrival',
     quantum: 3,
-    desc:    'CPU is idle from t=0 to t=3. Tests tie-breaking: P4 (priority 1) runs before P3 despite same arrival. P1 before P2 via FCFS. Both algorithms must handle the idle gap without crashing.',
-    expected:'Priority: P1 runs before P2 (FCFS); P4 runs before P3 (higher priority). RR: queues by arrival. Idle gap t=0→3 must not cause infinite loop.',
+    desc: 'Tie-breaking with a late first arrival: nothing arrives before t=3, so the timeline starts at t=3 and no idle bar is drawn. P1 and P2 arrive together with equal priority. P3 and P4 arrive together at t=5, and P4 has the higher priority.',
+    expected: 'Priority: P1 runs before P2 (same priority, earlier in the list), and P4 preempts P1 at t=5 and finishes first (5-11). Round Robin queues by arrival order: P1, P2, P3, P4. Round Robin has the lower averages here (average wait 5.50 vs 6.75).',
     procs: [
       { pid:'P1', at:3, bt:4, pr:2 },
       { pid:'P2', at:3, bt:3, pr:2 },
@@ -82,7 +83,7 @@ export const SCENARIOS = [
     name:    'Scenario 7 – Single Process (Edge Case)',
     quantum: 5,
     desc:    'Boundary test with only one process. WT and RT should both be 0; TAT equals burst time for both algorithms.',
-    expected:'Both algorithms produce WT=0, RT=0, TAT=7. Gantt chart shows one bar: [P1: 0→7]. No starvation detected.',
+    expected: 'Both algorithms produce WT=0, RT=0, TAT=7 and tie overall. The chart shows one bar [P1: 0→7] (Round Robin runs it as two slices of 5 and 2, drawn merged). No long wait.',
     procs: [
       { pid:'P1', at:0, bt:7, pr:1 },
     ]
@@ -146,17 +147,16 @@ export function buildScenariosTab() {
 }
 
 export function renderScenarioResultsHtml(idx, rrRes, prRes, rrStarv, prStarv) {
-  const rrWinner = rrRes.avgWt < prRes.avgWt ? 'rr' : prRes.avgWt < rrRes.avgWt ? 'pr' : 'tie';
-  const overallWinner = (rrRes.avgWt + rrRes.avgTat) < (prRes.avgWt + prRes.avgTat) ? 'rr' : 'pr';
-  const winLabel = overallWinner === 'rr' ? 'Round Robin' : 'Priority';
+  const overall = overallWinner(rrRes, prRes);
+  const winText = overall === 'rr' ? '🏆 Round Robin wins overall' : overall === 'pr' ? '🏆 Priority wins overall' : '⚖ Tied overall';
 
   return `
     <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:1rem">
         <span style="font-size:.72rem;color:var(--muted);font-family:monospace">RESULTS</span>
-        <span class="winner-chip ${overallWinner}">🏆 ${winLabel} wins overall</span>
-        ${rrStarv.length ? `<span class="winner-chip invalid">⚠ RR Starvation</span>` : ''}
-        ${prStarv.length ? `<span class="winner-chip invalid">⚠ Priority Starvation: ${prStarv.map(p=>p.pid).join(', ')}</span>` : ''}
+        <span class="winner-chip ${overall === 'tie' ? 'invalid' : overall}">${winText}</span>
+        ${rrStarv.length ? `<span class="winner-chip invalid">⚠ RR long waits: ${rrStarv.map(p=>p.pid).join(', ')}</span>` : ''}
+        ${prStarv.length ? `<span class="winner-chip invalid">⚠ Priority long waits: ${prStarv.map(p=>p.pid).join(', ')}</span>` : ''}
       </div>
       <div style="margin-bottom:.5rem;font-size:.72rem;color:var(--rr);font-family:monospace;letter-spacing:.08em">ROUND ROBIN GANTT</div>
       <div class="scenario-gantt-mini" id="sg-rr-${idx}" style="position:relative;height:36px"></div>
@@ -168,14 +168,14 @@ export function renderScenarioResultsHtml(idx, rrRes, prRes, rrStarv, prStarv) {
           <div class="metric-mini"><span class="mkey">Avg WT</span><span class="mval" style="color:var(--rr)">${rrRes.avgWt.toFixed(2)}</span></div>
           <div class="metric-mini"><span class="mkey">Avg TAT</span><span class="mval" style="color:var(--rr)">${rrRes.avgTat.toFixed(2)}</span></div>
           <div class="metric-mini"><span class="mkey">Avg RT</span><span class="mval" style="color:var(--rr)">${rrRes.avgRt.toFixed(2)}</span></div>
-          <div class="metric-mini"><span class="mkey">Starvation</span><span class="mval" style="color:${rrStarv.length?'var(--warn)':'var(--accent)'}">${rrStarv.length?'YES ⚠':'No ✓'}</span></div>
+          <div class="metric-mini"><span class="mkey">Long wait (&gt;20)</span><span class="mval" style="color:${rrStarv.length?'var(--warn)':'var(--accent)'}">${rrStarv.length?'YES ⚠':'No ✓'}</span></div>
         </div>
         <div>
           <div style="font-size:.68rem;color:var(--pr);font-family:monospace;margin-bottom:.5rem">◆ PRIORITY</div>
           <div class="metric-mini"><span class="mkey">Avg WT</span><span class="mval" style="color:var(--pr)">${prRes.avgWt.toFixed(2)}</span></div>
           <div class="metric-mini"><span class="mkey">Avg TAT</span><span class="mval" style="color:var(--pr)">${prRes.avgTat.toFixed(2)}</span></div>
           <div class="metric-mini"><span class="mkey">Avg RT</span><span class="mval" style="color:var(--pr)">${prRes.avgRt.toFixed(2)}</span></div>
-          <div class="metric-mini"><span class="mkey">Starvation</span><span class="mval" style="color:${prStarv.length?'var(--warn)':'var(--accent)'}">${prStarv.length?'YES ⚠':'No ✓'}</span></div>
+          <div class="metric-mini"><span class="mkey">Long wait (&gt;20)</span><span class="mval" style="color:${prStarv.length?'var(--warn)':'var(--accent)'}">${prStarv.length?'YES ⚠':'No ✓'}</span></div>
         </div>
       </div>
       <div style="margin-top:1rem;display:flex;gap:10px;flex-wrap:wrap">

@@ -1,4 +1,4 @@
-import { compareAll, best } from '../analysis/compareAll.js';
+import { compareAll, best, bestRows } from '../analysis/compareAll.js';
 
 const COLS = [
   ['avgWt', 'Avg wait', 'Average waiting time: time spent ready but not running. Lower is better.'],
@@ -12,7 +12,7 @@ let prev = null;
 export function renderGlance(procs, quantum) {
   const rows = compareAll(procs, quantum);
   const win = {};
-  COLS.forEach(([k]) => { win[k] = best(rows, k).key; });
+  COLS.forEach(([k]) => { win[k] = bestRows(rows, k).map(r => r.key); });
   const f = (k, v) => (k === 'contextSwitches' ? v : v.toFixed(2));
   const cur = {};
   const cards = [
@@ -32,6 +32,6 @@ export function renderGlance(procs, quantum) {
     <thead><tr><th>Algorithm</th>${COLS.map(c => `<th title="${c[2]}">${c[1]}</th>`).join('')}
     <th title="Share of the time span in which the CPU was busy">CPU busy</th></tr></thead>
     <tbody>${rows.map(r => `<tr><td><strong>${r.name}</strong></td>
-      ${COLS.map(([k]) => `<td class="${win[k] === r.key ? 'best' : ''}">${f(k, r[k])}</td>`).join('')}
+      ${COLS.map(([k]) => `<td class="${win[k].includes(r.key) ? 'best' : ''}">${f(k, r[k])}</td>`).join('')}
       <td>${Math.round(r.cpuUtilization * 100)}%</td></tr>`).join('')}</tbody></table></div></details>`;
 }

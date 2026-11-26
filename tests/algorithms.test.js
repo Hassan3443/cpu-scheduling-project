@@ -48,7 +48,7 @@ test('Priority (preemptive) on the demo workload', () => {
   assert.equal(by(r, 'P3').wt, 15);
 });
 
-test('idle gap before the first arrival is handled', () => {
+test('an idle gap between two arrivals is drawn, and the timeline starts at the first arrival', () => {
   const procs = [{ pid: 'P1', at: 3, bt: 2, pr: 1 }, { pid: 'P2', at: 10, bt: 1, pr: 1 }];
   const r = simulateFCFS(procs);
   assert.deepEqual(r.timeline.map(t => [t.pid, t.start, t.end]),
@@ -108,7 +108,7 @@ test('SRTF never has a worse average waiting time than FCFS or SJF', () => {
   }
 });
 
-test('idle time before the first arrival shows in Round Robin and Priority too', () => {
+test('the same idle gap between arrivals shows in Round Robin and Priority too', () => {
   const procs = [{ pid: 'P1', at: 3, bt: 2, pr: 1 }, { pid: 'P2', at: 10, bt: 1, pr: 1 }];
   for (const r of [simulateRR(procs, 2), simulatePriority(procs)]) {
     assert.deepEqual(r.timeline.map(t => [t.pid, t.start, t.end]),

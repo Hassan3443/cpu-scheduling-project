@@ -13,6 +13,7 @@ import { initNumberFields } from '../../modules/ui/numberField.js';
 import { PRESETS } from '../../modules/input/presets.js';
 import { renderCpuDiagram } from '../../modules/ui/cpuDiagram.js';
 import { encodeSetup, decodeSetup } from '../../modules/ui/share.js';
+import { LIMITS } from '../../modules/algorithms/common.js';
 import { initHelp } from '../../modules/ui/help.js';
 import { buildBackground } from '../../modules/ui/background.js';
 import { renderGlance } from '../../modules/ui/glance.js';
@@ -117,13 +118,14 @@ function attachEventListeners() {
   // Direct Button Listeners
   document.getElementById('btn-add-process').addEventListener('click', () => {
     const procs = getProcesses();
+    if (procs.length >= LIMITS.maxProcs) { const g = document.getElementById('global-err'); g.textContent = `At most ${LIMITS.maxProcs} processes.`; g.classList.add('show'); return; }
     let n = procs.length + 1;
     while (procs.some(p => p.pid === 'P' + n)) n++;
     procs.push({ pid: 'P' + n, at: 0, bt: 3, pr: 1 });
     document.querySelectorAll('.preset').forEach(b => b.classList.remove('on'));
     refreshTableState();
   });
-  const bump = d => { const q = document.getElementById('quantum'); q.value = Math.max(1, (parseInt(q.value, 10) || 1) + d); liveRun(); };
+  const bump = d => { const q = document.getElementById('quantum'); q.value = Math.min(LIMITS.maxQuantum, Math.max(1, (parseInt(q.value, 10) || 1) + d)); liveRun(); };
   document.getElementById('q-minus').addEventListener('click', () => bump(-1));
   document.getElementById('q-plus').addEventListener('click', () => bump(1));
 
@@ -147,7 +149,8 @@ function attachEventListeners() {
       const v = c.value.trim();
       const n = Number(v);
       const min = c.dataset.field === 'bt' || c.dataset.field === 'pr' ? 1 : 0;
-      const ok = v !== '' && Number.isInteger(n) && n >= min && (c.dataset.field !== 'pr' || n <= 99);
+      const maxV = c.dataset.field === 'pr' ? LIMITS.maxPriority : LIMITS.maxTime;
+      const ok = v !== '' && Number.isSafeInteger(n) && n >= min && n <= maxV;
       c.classList.toggle('invalid', !ok);
       if (ok && p) { p[c.dataset.field] = n; live(); }
     } else if (e.target.id === 'quantum') live();
@@ -174,7 +177,7 @@ function refreshTableState() {
 function liveRun() {
   if (!getProcesses().length) return;
   const q = document.getElementById('quantum').value.trim();
-  if (!/^\d+$/.test(q) || +q < 1) return;
+  if (!/^\d+$/.test(q) || +q < 1 || +q > LIMITS.maxQuantum) return;
   runSimulation({ jump: false });
 }
 
@@ -191,8 +194,8 @@ function runSimulation(opts = {}) {
   const gErr = document.getElementById('global-err');
   gErr.classList.remove('show');
 
-  if (!qVal || isNaN(qVal) || !Number.isInteger(+qVal) || +qVal < 1) {
-    gErr.textContent = 'The time slice (quantum) must be a whole number, 1 or more.';
+  if (!/^\d+$/.test(qVal) || +qVal < 1 || +qVal > LIMITS.maxQuantum) {
+    gErr.textContent = `The time slice (quantum) must be a whole number from 1 to ${LIMITS.maxQuantum}.`;
     gErr.classList.add('show');
     if (jump) switchTab('input');
     return;

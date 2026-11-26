@@ -31,12 +31,12 @@ test('single-unit bursts and quantum 1', () => {
   const procs = [{ pid: 'P1', at: 0, bt: 1, pr: 1 }, { pid: 'P2', at: 0, bt: 1, pr: 1 }];
   assert.deepEqual(simulateRR(procs, 1).timeline.map(t => t.pid), ['P1', 'P2']);
 });
-test('very large times and 60 processes stay exact', () => {
-  const big = [{ pid: 'P1', at: 1000000, bt: 500000, pr: 1 }, { pid: 'P2', at: 1000001, bt: 1, pr: 1 }];
+test('largest allowed times and the 30-process limit stay exact', () => {
+  const big = [{ pid: 'P1', at: 999, bt: 999, pr: 1 }, { pid: 'P2', at: 999, bt: 1, pr: 1 }];
   const r = simulateFCFS(big);
-  assert.equal(r.metrics[1].wt, 499999);
-  const many = Array.from({ length: 60 }, (_, i) => ({ pid: 'P' + i, at: i % 7, bt: 1 + (i % 5), pr: 1 + (i % 4) }));
-  for (const row of compareAll(many, 3)) assert.equal(row.result.metrics.length, 60);
+  assert.equal(r.metrics[1].wt, 999);
+  const many = Array.from({ length: 30 }, (_, i) => ({ pid: 'P' + i, at: i % 7, bt: 1 + (i % 5), pr: 1 + (i % 4) }));
+  for (const row of compareAll(many, 3)) assert.equal(row.result.metrics.length, 30);
 });
 test('metrics are listed by arrival time then input order', () => {
   const r = simulateFCFS([{ pid: 'late', at: 5, bt: 1, pr: 1 }, { pid: 'b', at: 0, bt: 1, pr: 1 }, { pid: 'a', at: 0, bt: 1, pr: 1 }]);

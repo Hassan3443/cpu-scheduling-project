@@ -11,19 +11,12 @@ export const ALGORITHMS = [
   { key: 'pr', name: 'Priority (preemptive)', run: (p) => simulatePriority(p) }
 ];
 
-// Context switches and utilisation are computed from the timeline for every
-// algorithm, so Round Robin and Priority are measured the same way as the rest.
+// Context switches and utilisation come from the engine result (one definition, in common.js).
 export function summarise(result) {
-  const segs = result.timeline.filter(t => t.pid !== 'IDLE');
-  const busy = segs.reduce((s, t) => s + t.end - t.start, 0);
-  const total = result.timeline.length
-    ? result.timeline[result.timeline.length - 1].end - result.timeline[0].start : 0;
-  let switches = 0;
-  for (let i = 1; i < segs.length; i++) if (segs[i].pid !== segs[i - 1].pid) switches++;
   return {
     avgWt: result.avgWt, avgTat: result.avgTat, avgRt: result.avgRt,
-    cpuUtilization: total ? busy / total : 0,
-    contextSwitches: switches
+    cpuUtilization: result.cpuUtilization,
+    contextSwitches: result.contextSwitches
   };
 }
 
@@ -34,6 +27,17 @@ export function compareAll(procs, quantum) {
   });
 }
 
+// Higher is better for these; everything else is better when smaller.
+const HIGHER_IS_BETTER = new Set(['cpuUtilization']);
+
+// Every row that ties for the best value of `key` (so a tie highlights all of them).
+export function bestRows(rows, key) {
+  const up = HIGHER_IS_BETTER.has(key);
+  const top = rows.reduce((b, r) => (up ? r[key] > b : r[key] < b) ? r[key] : b, rows[0][key]);
+  return rows.filter(r => r[key] === top);
+}
+
+// The first of the best rows.
 export function best(rows, key) {
-  return rows.reduce((b, r) => (r[key] < b[key] ? r : b), rows[0]);
+  return bestRows(rows, key)[0];
 }

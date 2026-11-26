@@ -32,7 +32,7 @@ export function renderTable(processes) {
   tbody.innerHTML = processes.map(p => `
     <tr>
       <td><span class="pid-badge">${p.pid}</span></td>
-      ${cell(p, 'at', 0)}${cell(p, 'bt', 1)}${cell(p, 'pr', 1, 99)}
+      ${cell(p, 'at', 0, 999)}${cell(p, 'bt', 1, 999)}${cell(p, 'pr', 1, 99)}
       <td><button class="btn-del" data-action="remove" data-pid="${p.pid}" title="Remove ${p.pid}" aria-label="Remove ${p.pid}">✕</button></td>
     </tr>
   `).join('');
@@ -45,8 +45,8 @@ export function renderResults(rr, pr, detectStarvationCb) {
 
   if (rrStarv.length || prStarv.length) {
     const msgs = [];
-    if (rrStarv.length) msgs.push(`⚠ RR Starvation: ${rrStarv.map(p => `${p.pid} (WT=${p.wt})`).join(', ')}`);
-    if (prStarv.length) msgs.push(`⚠ Priority Starvation: ${prStarv.map(p => `${p.pid} (WT=${p.wt})`).join(', ')}`);
+    if (rrStarv.length) msgs.push(`⚠ Long waits under Round Robin: ${rrStarv.map(p => `${p.pid} (WT=${p.wt})`).join(', ')}`);
+    if (prStarv.length) msgs.push(`⚠ Long waits under Priority: ${prStarv.map(p => `${p.pid} (WT=${p.wt})`).join(', ')}`);
     sb.innerHTML = msgs.map(m => `<div class="starv-banner">${m}</div>`).join('');
   } else {
     sb.innerHTML = '';
