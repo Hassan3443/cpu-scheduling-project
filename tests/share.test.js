@@ -76,3 +76,18 @@ test('referenceTicks fills long gaps without repeating event ticks', () => {
   assert.deepEqual(referenceTicks(27, [0, 1, 3, 5, 8, 27]), [10, 15, 20, 25]);
   assert.deepEqual(referenceTicks(100, [0, 50, 100]), [10, 20, 30, 40, 60, 70, 80, 90]);
 });
+
+import { slot } from '../modules/ui/cpuDiagram.js';
+test('diagram slots: tokens never overlap in Incoming/Done and the queue squeezes when long', () => {
+  for (const n of [1, 2, 4, 6, 8]) {
+    const pts = Array.from({ length: n }, (_, i) => slot('incoming', -1, -1, i, { inc: n }));
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+      assert.ok(d >= 44 || n > 6, `n=${n} tokens ${i},${j} too close (${d.toFixed(1)})`);
+    }
+    pts.forEach(p => assert.ok(p.x >= 20 && p.x <= 130 && p.y >= 45 && p.y <= 215));
+  }
+  const q = Array.from({ length: 10 }, (_, i) => slot('ready', i, -1, -1, { ready: 10 }));
+  assert.ok(q[9].x >= 170 && q[0].x <= 490);
+  assert.deepEqual(slot('running', 0, 0, 0), { x: 655, y: 130, k: 1 });
+});

@@ -11,11 +11,13 @@ import { renderCompareAll } from '../../modules/ui/compareView.js';
 import { PRESETS } from '../../modules/input/presets.js';
 import { renderCpuDiagram } from '../../modules/ui/cpuDiagram.js';
 import { encodeSetup, decodeSetup } from '../../modules/ui/share.js';
+import { buildBackground } from '../../modules/ui/background.js';
 import { renderGlance } from '../../modules/ui/glance.js';
 import { SCENARIOS, buildScenariosTab, renderScenarioResultsHtml } from '../../modules/testing/testScenarios.js';
 
 // Setup Initialization
 document.addEventListener('DOMContentLoaded', () => {
+  buildBackground();
   buildScenariosTab();
   buildPresets();
   attachEventListeners();

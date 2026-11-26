@@ -617,3 +617,18 @@ tbody td:hover{background:rgba(56,189,248,.13)}
 .gantt-bar .bar-sl{font-size:10px;opacity:.7;margin-left:6px;font-weight:500}
 .gantt-times span.ref{opacity:.45;font-size:.6rem}
 .gantt-times{height:20px}
+/* Diagram pass */
+.cd-arrow.sm{stroke:#64748B;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.cd-die-trace{stroke:#3B4A63;stroke-width:1.2;fill:none}
+.cd-die-dot{fill:#4a566f}
+.cd-proc[data-status=running] circle:first-child{fill-opacity:1;filter:drop-shadow(0 0 7px rgba(56,189,248,.35))}
+.cd-ticks{position:relative;height:18px;margin-top:4px;font:600 11px var(--font-mono);color:var(--muted)}
+.cd-ticks span{position:absolute;top:0;white-space:nowrap}
+.cd-ticks span.ref{opacity:.45;font-size:10px}
+/* Background pass: faint CPU glyphs instead of colored squares */
+.bg-fx i.cpu-glyph{width:auto;height:auto;background:none;border-radius:0;color:#8FA3BF;opacity:var(--o,.07);transform:rotate(var(--r,0deg));animation:glyph-drift var(--d,80s) ease-in-out var(--dl,0s) infinite alternate}
+.bg-fx i.cpu-glyph svg{display:block}
+.bg-fx i.cpu-glyph:nth-of-type(3n){color:#38BDF8}
+@keyframes glyph-drift{0%{transform:translate(0,0) rotate(var(--r,0deg))}100%{transform:translate(40px,-60px) rotate(calc(var(--r,0deg) + 24deg))}}
+.bg-fx::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(10,13,18,.45),transparent 100%)}
+@media (prefers-reduced-motion:reduce){.bg-fx i.cpu-glyph{animation:none}}
