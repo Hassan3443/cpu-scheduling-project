@@ -64,3 +64,15 @@ test('ready queue order shown matches RR convention (arrival ahead of preempted)
   assert.deepEqual(st.map(x => x.pid), ['P3', 'P2']);
   assert.deepEqual(tl.map(s => s.pid + s.start), ['P10', 'P22', 'P14', 'P36', 'P28', 'P19']);
 });
+
+import { mergeSlices, referenceTicks } from '../modules/ui/ganttChart.js';
+test('mergeSlices joins back-to-back slices of one process and counts them', () => {
+  const tl = [{ pid: 'P1', start: 0, end: 3 }, { pid: 'P1', start: 3, end: 6 }, { pid: 'P2', start: 6, end: 8 }, { pid: 'P1', start: 8, end: 11 }, { pid: 'IDLE', start: 11, end: 12 }, { pid: 'IDLE', start: 12, end: 13 }];
+  const m = mergeSlices(tl);
+  assert.deepEqual(m.map(x => [x.pid, x.start, x.end, x.slices]), [['P1', 0, 6, 2], ['P2', 6, 8, 1], ['P1', 8, 11, 1], ['IDLE', 11, 12, 1], ['IDLE', 12, 13, 1]]);
+  assert.equal(tl.length, 6); // input untouched
+});
+test('referenceTicks fills long gaps without repeating event ticks', () => {
+  assert.deepEqual(referenceTicks(27, [0, 1, 3, 5, 8, 27]), [10, 15, 20, 25]);
+  assert.deepEqual(referenceTicks(100, [0, 50, 100]), [10, 20, 30, 40, 60, 70, 80, 90]);
+});

@@ -605,3 +605,15 @@ tbody td:hover{background:rgba(56,189,248,.13)}
 #process-table .pid-badge{font-size:12px;padding:3px 6px}
 #process-table .btn-del{min-width:34px;min-height:34px;padding:0}
 }
+/* Results pass: shared legend, colored queue, merged slices, scale ticks */
+.legend-shared{margin:0 0 14px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+.legend-shared::before{content:"Process colors";font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:6px;align-self:center}
+.queue-display{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px}
+.q-note{font-size:12px;color:var(--muted)}
+.q-flow{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px}
+.q-arrow{color:var(--muted);font-size:13px}
+.rq-pill{display:inline-flex;align-items:center;height:28px;padding:0 11px;font:700 12.5px var(--font-mono);color:var(--text);background:color-mix(in srgb,var(--pc) 16%,var(--surface2));border:1px solid color-mix(in srgb,var(--pc) 45%,transparent);border-left:3px solid var(--pc);border-radius:7px}
+.rq-pill.next{box-shadow:0 0 0 1px color-mix(in srgb,var(--pc) 40%,transparent)}
+.gantt-bar .bar-sl{font-size:10px;opacity:.7;margin-left:6px;font-weight:500}
+.gantt-times span.ref{opacity:.45;font-size:.6rem}
+.gantt-times{height:20px}

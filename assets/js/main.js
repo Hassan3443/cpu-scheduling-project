@@ -3,7 +3,7 @@ import {
 } from '../../modules/input/inputManager.js';
 import { switchTab } from '../../modules/ui/inputUI.js';
 import { renderTable, renderResults, COLORS } from '../../modules/ui/tableRenderer.js';
-import { renderGantt, renderMiniGantt } from '../../modules/ui/ganttChart.js';
+import { renderGantt, renderMiniGantt, renderQueue } from '../../modules/ui/ganttChart.js';
 import { detectStarvation, renderSummary } from '../../modules/analysis/analysis.js';
 import { simulateRR } from '../../modules/algorithms/roundRobin.js';
 import { simulatePriority } from '../../modules/algorithms/priority.js';
@@ -186,16 +186,9 @@ function runSimulation(opts = {}) {
   document.getElementById('gantt-placeholder').style.display = 'none';
   document.getElementById('gantt-content').style.display = 'block';
   renderGantt('gantt-rr', 'times-rr', 'legend-rr', rrResult.timeline, colorMap);
-  renderGantt('gantt-pr', 'times-pr', 'legend-pr', prResult.timeline, colorMap);
+  renderGantt('gantt-pr', 'times-pr', null, prResult.timeline, colorMap);
 
-  // Queue snapshot
-  const q = document.getElementById('rr-queue');
-  if (rrResult.queueSnapshot.length) {
-    q.innerHTML = '<span style="color:var(--muted);font-size:.72rem;margin-right:4px">Queue snapshot:</span>' +
-      rrResult.queueSnapshot.map(pid => `<span class="queue-tag">${pid}</span>`).join('<span style="color:var(--muted)">→</span>');
-  } else {
-    q.textContent = 'All processes complete — queue empty at end.';
-  }
+  renderQueue(document.getElementById('rr-queue'), rrResult.queueSnapshot, colorMap);
 
   // Results & Summary
   document.getElementById('results-placeholder').style.display = 'none';
@@ -247,12 +240,9 @@ function loadAndRunScenario(idx) {
   document.getElementById('summary-content').style.display     = 'block';
 
   renderGantt('gantt-rr','times-rr','legend-rr', rrRes.timeline, colorMap);
-  renderGantt('gantt-pr','times-pr','legend-pr', prRes.timeline, colorMap);
+  renderGantt('gantt-pr','times-pr',null, prRes.timeline, colorMap);
 
-  const qEl = document.getElementById('rr-queue');
-  qEl.textContent = rrRes.queueSnapshot.length
-    ? 'Queue: ' + rrRes.queueSnapshot.join(' → ')
-    : 'All processes complete — queue empty at end.';
+  renderQueue(document.getElementById('rr-queue'), rrRes.queueSnapshot, colorMap);
 
   renderResults(rrRes, prRes, detectStarvation);
   renderSummary(rrRes, prRes, quantum);
